@@ -1,0 +1,54 @@
+body{
+    height: 100vh;
+    background-image: url('https://boursieplus.ir/wp-content/uploads/2018/10/full_38402.jpg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.parent{
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+    flex-direction: column;
+
+
+}
+.myInput{
+    width: 90%;
+    height: 45px;
+    border-radius: 5px;
+    /* margin-bottom:8px ; */
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.616);
+
+
+}
+form{
+    width: 400px;
+    background-color: #c7b4b4;
+    display: flex;
+    height: 330px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    border-radius: 10px;
+}
+#mySubmit{
+    cursor: pointer;
+    background-color: rgb(29, 141, 185);
+}
+#userType{
+    width: 90%;
+    height: 30px;
+    text-align: center;
+}
+label{
+    font-size: 18px;
+}
+input[type='radio']{
+
+    box-sizing: border-box;
+
+    width: 20px;
+    height: 16px;
+}

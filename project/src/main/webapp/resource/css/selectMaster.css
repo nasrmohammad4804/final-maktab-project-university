@@ -1,0 +1,11 @@
+td,th{
+    border: 1px solid black;
+    padding: 10px;
+}
+a{
+    text-decoration: none;
+    background-color: chartreuse;
+}
+table{
+    border-collapse: collapse;
+}

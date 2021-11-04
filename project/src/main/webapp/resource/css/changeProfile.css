@@ -1,0 +1,26 @@
+.parent{
+    margin: 0 auto;
+    width: 27%;
+    height: 300px;
+    background-color: rgba(128, 128, 128,.6);
+    padding: 10px;
+    border-radius: 10px;
+
+}
+input{
+    border-radius:5px ;
+    height: 18px;
+    padding-left: 10px;
+
+
+}
+#mySubmit{
+    padding: 10px;
+    background-color: rgb(66, 216, 66);
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    height: 40px;
+    width: 100px;
+
+}
