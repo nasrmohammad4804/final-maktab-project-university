@@ -64,6 +64,9 @@ public  class User {
         this.role = role;
     }
 
+    public User(Long id) {
+        this.id = id;
+    }
 
     public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive) {
         this.firstName = firstName;

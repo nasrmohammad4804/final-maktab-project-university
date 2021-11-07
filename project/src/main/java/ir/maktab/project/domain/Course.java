@@ -1,10 +1,7 @@
 package ir.maktab.project.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -52,4 +49,8 @@ public class Course {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = TEMP_STUDENT_COURSE)
     private Set<Student> students=new HashSet<>();
+
+    public Course(Long id) {
+        this.id = id;
+    }
 }

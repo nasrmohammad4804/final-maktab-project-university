@@ -52,3 +52,6 @@ input[type='radio']{
     width: 20px;
     height: 16px;
 }
+.red{
+    color: red;
+}

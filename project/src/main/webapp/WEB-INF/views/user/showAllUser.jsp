@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../../resource/css/showAllUser.css">
+    <link rel="stylesheet" href="../../../resource/css/showAllUser.css">
 </head>
 
 
@@ -58,8 +58,8 @@
     </tbody>
 </table>
 
-<script src="../../resource/js/jquery-3.6.0.min.js"></script>
-<script src="../../resource/js/main.js"></script>
+<script src="../../../resource/js/jquery-3.6.0.min.js"></script>
+<script src="../../../resource/js/showAllUser.js"></script>
 
 </body>
 </html>

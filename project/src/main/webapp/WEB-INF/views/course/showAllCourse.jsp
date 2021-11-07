@@ -6,11 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        td,th{
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="../../../resource/css/showAllCourse.css">
 </head>
 <body>
 <table>
@@ -19,8 +15,7 @@
         <th>courseName</th>
         <th>start time</th>
         <th>end time</th>
-        <th>courseNumber</th>
-        <th>groupNumber</th>
+        <th>courseNumber & groupNumber</th>
         <th>select</th>
     </tr>
     <c:forEach var="course" items="${allCourse}">
@@ -28,9 +23,8 @@
             <td>${course.name}</td>
             <td>${course.courseStartedDate}</td>
             <td>${course.courseFinishedDate}</td>
-            <td>${course.courseNumber}</td>
-            <td>${course.groupNumber}</td>
-            <td><a href="/course/show/${course.id}">choose</a></td>
+            <td>${course.courseNumber}_${course.groupNumber}</td>
+            <td><a id="myLink" href="/course/show/${course.id}">choose</a></td>
         </tr>
     </c:forEach>
 </table>

@@ -26,7 +26,6 @@ import java.util.Optional;
 @RequestMapping(value = "/course")
 public class CourseController {
 
-
     @Autowired
     private UserService userService;
 
@@ -45,9 +44,7 @@ public class CourseController {
     }
 
 
-    @PostMapping(value = "/confirm/{id}")
-
-    //todo get
+    @GetMapping(value = "/confirm/{id}")
     @ResponseBody
     public String confirmOfAddCourse(@PathVariable("id") Long id, HttpServletRequest request) {
         Optional<User> user = userService.findById(id);
@@ -98,7 +95,7 @@ public class CourseController {
 
         Course course = courseService.findById(courseId).get();
 
-        Optional<Student> student =studentService.findWithId(studentId);
+        Optional<Student> student = studentService.findWithId(studentId);
 
         courseService.deleteUser(course, student.get());
 
@@ -107,34 +104,33 @@ public class CourseController {
     }
 
     @GetMapping(value = "/select-student")
-    public String showAllStudentNotExistInCourse(HttpServletRequest request,Model model) {
+    public String showAllStudentNotExistInCourse(HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession();
         Long courseId = (Long) session.getAttribute("courseId");
 
         Course course = courseService.findById(courseId).get();
 
+        String checker = course.getStudents().isEmpty() ? "" : "data";
 
-        String checker=course.getStudents().isEmpty() ? "" : "data";
-
-        List<Student> students = studentService.dontExistOnCourse(course.getStudents(),checker);
+        List<Student> students = studentService.dontExistOnCourse(course.getStudents(), checker);
         if (students.isEmpty())
             return "userNotFounding";
 
-
-        model.addAttribute("students",students);
+        model.addAttribute("students", students);
         return "course/selectStudentForCourse";
     }
+
     @GetMapping(value = "/confirm-student")
     @ResponseBody
-    public ResponseEntity<String> confirmOfAddStudentToCourse(@RequestParam("id") Long id,HttpServletRequest request){
+    public ResponseEntity<String> confirmOfAddStudentToCourse(@RequestParam("id") Long id, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
 
         Long courseId = (Long) session.getAttribute("courseId");
         Course course = courseService.findById(courseId).get();
 
-       courseService.addStudent(course,studentService.findById(id).get());
+        courseService.addStudent(course, studentService.findById(id).get());
 
         return ResponseEntity.status(HttpStatus.OK).body("<p style=color:green>successfully student added to course</p>");
     }

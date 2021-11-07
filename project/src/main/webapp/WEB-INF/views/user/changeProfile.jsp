@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../../resource/css/changeProfile.css">
+    <link rel="stylesheet" href="../../../resource/css/changeProfile.css">
 </head>
 <body>
 
 <div class="parent">
     <h3>change proflie</h3>
-    <form action="/change-profile" method="post">
+    <form action="/change-profile" method="pos">
         <label id="firstNameLable">firstName:</label>
         <input type="text" value="${sessionScope.user.firstName}" name="firstName" required> <br> <br>
 
