@@ -115,7 +115,7 @@ public class CourseController {
 
         List<Student> students = studentService.dontExistOnCourse(course.getStudents(), checker);
         if (students.isEmpty())
-            return "userNotFounding";
+            return "user/userNotFounding";
 
         model.addAttribute("students", students);
         return "course/selectStudentForCourse";
@@ -133,5 +133,21 @@ public class CourseController {
         courseService.addStudent(course, studentService.findById(id).get());
 
         return ResponseEntity.status(HttpStatus.OK).body("<p style=color:green>successfully student added to course</p>");
+    }
+    @PostMapping(value = "/find-master")
+    @PreAuthorize("hasRole('manager')")
+    public String findAll(@ModelAttribute("course") Course course, HttpServletRequest request, Model model) {
+
+        HttpSession session = request.getSession();
+        session.setAttribute("course", course);
+
+        List<User> users = userService.findAllMaster();
+
+        if (users.isEmpty())
+            return "user/userNotFounding";
+
+        model.addAttribute("users",mapper.convertEntitiesToDTOList(users));
+
+        return "manager/selectMaster";
     }
 }
