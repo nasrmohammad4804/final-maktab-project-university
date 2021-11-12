@@ -21,7 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.formLogin().defaultSuccessUrl("/login-user").failureUrl("/login?error=true");
-        http.authorizeRequests().mvcMatchers("/master/**").hasRole("master");
+        http.authorizeRequests().mvcMatchers("/master/**").hasRole("master")
+        .mvcMatchers("/course/**").hasRole("manager");
         http.authorizeRequests().mvcMatchers("/unauthorized").authenticated();
         http.exceptionHandling().accessDeniedPage("/unauthorized");
         http.cors().and().csrf().disable();

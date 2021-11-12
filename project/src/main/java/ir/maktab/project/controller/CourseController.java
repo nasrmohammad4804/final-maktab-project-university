@@ -11,7 +11,6 @@ import ir.maktab.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,13 +61,12 @@ public class CourseController {
     }
 
     @GetMapping(value = "/all")
-    @PreAuthorize("hasRole('manager')")
     public String getAllUserOfCourse(Model model) {
         model.addAttribute("allCourse", courseService.findAll());
         return "course/showAllCourse";
     }
 
-    @PreAuthorize("hasRole('manager')")
+
     @GetMapping(value = "/show/{id}")
     public String showCourse(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
         Optional<Course> course = courseService.findById(id);
@@ -83,7 +81,7 @@ public class CourseController {
         return "course/showAllUserOfCourse";
     }
 
-    @PreAuthorize("hasRole('manager')")
+
     @ResponseBody
     @DeleteMapping(value = "/delete-student/{student-id}")
     public ResponseEntity<String> deleteStudent(@PathVariable("student-id") Long studentId, HttpServletRequest request) {
@@ -138,7 +136,7 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body("<p style=color:green>successfully student added to course</p>");
     }
     @PostMapping(value = "/find-master")
-    @PreAuthorize("hasRole('manager')")
+
     public String findAll(@ModelAttribute("course") Course course, HttpServletRequest request, Model model, RedirectAttributes attributes) {
 
         Predicate<LocalDate> predicate= ( x -> LocalDate.now().isAfter(x)  );
