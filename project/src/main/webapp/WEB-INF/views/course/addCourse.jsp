@@ -12,7 +12,7 @@
 
 </form>
 
-<form action="/find-master" method="post">
+<form action="/course/find-master" method="post">
     <div>
         <label for="">courseName:</label>
         <input type="text" name="name" id="" required>

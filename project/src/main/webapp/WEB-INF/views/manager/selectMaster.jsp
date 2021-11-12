@@ -24,7 +24,7 @@
                 <td>${user.firstName}</td>
                 <td>${user.lastName}</td>
                 <td>${user.userName}</td>
-                <td> <a href="course/confirm/${user.id}" >choose</a> </td>
+                <td> <a href="/course/confirm/${user.id}" >choose</a> </td>
             </tr>
         </c:forEach>
 

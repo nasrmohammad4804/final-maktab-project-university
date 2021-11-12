@@ -12,12 +12,12 @@
 
 <div class="parent">
     <h3>change proflie</h3>
-    <form action="/change-profile" method="pos">
+    <form action="/change-profile" method="post" >
         <label id="firstNameLable">firstName:</label>
-        <input type="text" value="${sessionScope.user.firstName}" name="firstName" required> <br> <br>
+        <input type="text" value="${sessionScope.user.firstName}" name="firstName" required id="myFirstName"> <br> <br>
 
         <label>lastName:</label>
-        <input type="text" value="${sessionScope.user.lastName}" name="lastName" required> <br> <br>
+        <input type="text" value="${sessionScope.user.lastName}" name="lastName" required id="myLastName"> <br> <br>
 
         <span>userType: </span>
 
@@ -46,5 +46,6 @@
         <input type="submit" value="confirm" id="mySubmit">
     </form>
 </div>
+
 </body>
 </html>
