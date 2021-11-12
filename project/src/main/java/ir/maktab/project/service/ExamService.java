@@ -8,7 +8,7 @@ import java.util.Optional;
 @Service
 public interface ExamService {
 
-    Optional<Exam> findById(Long id);
+    Exam findById(Long id);
     void updateExamIsBeingHeld(Exam exam, Exam updatedExam);
     void deleteExam(Exam exam);
     void updateExamNotStarted(Exam exam,Exam updateExam);

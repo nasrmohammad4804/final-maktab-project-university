@@ -83,8 +83,8 @@ public class MasterController {
     @GetMapping(value = "/change-examBeingHeld")
     public String changeExamIsBeingHeld(@ModelAttribute("error") String error, @RequestParam("examId") Long examId, Model model) {
 
-        Optional<Exam> exam = examService.findById(examId);
-        model.addAttribute("exam", exam.get());
+        Exam exam = examService.findById(examId);
+        model.addAttribute("exam", exam);
 
         return "master/changeExamIsBeingHeld";
     }
@@ -92,13 +92,13 @@ public class MasterController {
     @PostMapping(value = "/change-examBeingHeld")
     public String changeExamIsBeingHeld(Exam updatedExam, RedirectAttributes attributes) {
 
-        Optional<Exam> exam = examService.findById(updatedExam.getId());
+       Exam exam= examService.findById(updatedExam.getId());
         if (!updatedExam.getEndTime().isAfter(LocalTime.now())) {
             attributes.addAttribute("error", "your newTime is not valid");
             return "redirect:/master/change-examBeingHeld?examId=" + updatedExam.getId();
         }
 
-        examService.updateExamIsBeingHeld(exam.get(), updatedExam);
+        examService.updateExamIsBeingHeld(exam, updatedExam);
         return "master/resultOfChangeExamIsBeingHeld";
     }
 
@@ -106,11 +106,8 @@ public class MasterController {
     @ResponseBody
     public ResponseEntity<String> deleteExam(@PathVariable("id") Long examId) {
 
-        Optional<Exam> exam = examService.findById(examId);
-        if (exam.isEmpty())
-            throw new ExamNotFoundException("this exam dont exist");
-
-        examService.deleteExam(exam.get());
+        Exam exam = examService.findById(examId);
+        examService.deleteExam(exam);
 
         return ResponseEntity.ok("exam successfully deleted");
     }
@@ -125,8 +122,7 @@ public class MasterController {
     @ResponseBody
     public ResponseEntity<String> checkMasterIdIsValid(@PathVariable("id") Long id) {
 
-        examService.findById(id).orElseThrow(() -> new ExamNotFoundException("this exam dont exists"));
-
+       examService.findById(id);
         return ResponseEntity.ok().build();
     }
 
@@ -134,8 +130,8 @@ public class MasterController {
 
     public String changeExamNotStarted(Model model, @PathVariable("examId") Long id, @ModelAttribute("error") String error) {
 
-        Optional<Exam> exam = examService.findById(id);
-        model.addAttribute("exam", exam.get());
+        Exam exam=examService.findById(id);
+        model.addAttribute("exam", exam);
 
         return "master/updateExamNotStarted";
     }
@@ -143,18 +139,18 @@ public class MasterController {
     @PostMapping(value = "/update-examNotStarted")
     public String changeExamNotStarted(Exam updatedExam, RedirectAttributes attributes) {
 
-        Optional<Exam> exam = examService.findById(updatedExam.getId());
+       Exam exam= examService.findById(updatedExam.getId());
 
         LocalDateTime currentTime = LocalDateTime.now();
         Predicate<LocalDateTime> predicate = (currentTime::isAfter);
-        Predicate<LocalDateTime> finalTest = predicate.or(x -> x.toLocalDate().isAfter(exam.get().getCourse().getCourseFinishedDate()));
+        Predicate<LocalDateTime> finalTest = predicate.or(x -> x.toLocalDate().isAfter(exam.getCourse().getCourseFinishedDate()));
 
         if (finalTest.test(updatedExam.getStartTime()) || updatedExam.getStartTime().toLocalTime().isAfter(updatedExam.getEndTime())) {
             attributes.addAttribute("error", "your time is not valid");
             return "redirect:/master/update-examNotStarted/" + updatedExam.getId();
         }
 
-        examService.updateExamNotStarted(exam.get(), updatedExam);
+        examService.updateExamNotStarted(exam, updatedExam);
         return "master/resultOfChangeExamNotStarted";
     }
 }

@@ -1,6 +1,7 @@
 package ir.maktab.project.service.impl;
 
 import ir.maktab.project.domain.Exam;
+import ir.maktab.project.exception.ExamNotFoundException;
 import ir.maktab.project.repository.ExamRepository;
 import ir.maktab.project.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class ExamServiceImpl implements ExamService {
 
 
     @Override
-    public Optional<Exam> findById(Long id) {
-        return repository.findById(id);
+    public Exam findById(Long id) {
+      return repository.findById(id).orElseThrow(() -> new ExamNotFoundException("this exam dont exists"));
     }
 
     @Override
