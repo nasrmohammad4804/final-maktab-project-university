@@ -1,12 +1,16 @@
 package ir.maktab.project.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,6 +25,8 @@ public class Course {
     private static final String TEMP_STUDENT_COURSE="course_student";
     private static final String COURSE_NUMBER="course_number";
     private static final String GROUP_NUMBER="group_number";
+    public static final String COURSE_ID="course_id";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -50,7 +56,7 @@ public class Course {
     @JoinTable(name = TEMP_STUDENT_COURSE)
     private Set<Student> students=new HashSet<>();
 
-    public Course(Long id) {
-        this.id = id;
-    }
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "course")
+    private List<Exam> examList=new LinkedList<>();
 }
