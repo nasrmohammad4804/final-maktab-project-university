@@ -1,0 +1,85 @@
+#add-student-link {
+
+    margin: 20px 10px;
+    position: relative;
+
+}
+
+#add-student-link a {
+    background-color: rgb(48, 139, 224);
+    font-size: 17px;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#master-information-header {
+
+    background-color: grey;
+    border-radius: 10px;
+}
+
+#master-information {
+
+    text-align: center;
+    color: brown;
+    font-size: 18px;
+}
+
+.parent {
+    display: flex;
+    justify-content: space-around;
+    flex-grow: 1;
+}
+
+span {
+    color: white;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: center;
+
+    padding: 15px;
+}
+
+th {
+    background-color: darkgoldenrod;
+}
+
+
+table {
+    width: 80%;
+    height: 100%;
+    display: block;
+    border-collapse: collapse;
+}
+
+.header-table {
+    border: 1px solid black;
+}
+
+.delete {
+    text-decoration: none;
+    background-color: rgb(231, 85, 114);
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+}
+
+#message {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 50px;
+    background-color: aquamarine;
+    color: red;
+
+    font-size: 18px;
+    text-align: center
+}

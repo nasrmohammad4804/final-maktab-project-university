@@ -1,0 +1,34 @@
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th{
+
+    text-align: start;
+    padding: 4px;
+}
+td,th{
+    border: 1px solid black;
+    padding-left: 7px;
+
+}
+td{
+    padding: 7px;
+}
+tr:nth-child(even){
+    background-color: coral;
+}
+.header{
+    padding: 10px;
+    background-color: chocolate;
+    text-align: center;
+}
+
+.header span{
+    font-weight: 800;
+    font-size: 17px;
+}
+.myButton{
+    cursor: pointer;
+}

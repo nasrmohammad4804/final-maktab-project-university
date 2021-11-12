@@ -1,0 +1,44 @@
+body{
+    width: 100%;
+    height: 100vh;
+    background-image: url('https://safirsayee.com/wp-content/uploads/2021/04/2B-%CF%80ae%E2%88%9ENight_view-min.jpg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+#myTextArea{
+    resize: none;
+    width: 96%;
+    border-radius: 10px;
+
+}
+form{
+    display: flex;
+    flex-wrap: wrap;
+    width: 400px;
+    padding-left: 5px;
+
+    background-color: rgb(175, 169, 169);
+    align-content: flex-end;
+    border-radius: 5px;
+}
+.red{
+
+    color: red;
+    font-size: 17px;
+}
+.myTime{
+    flex-grow: 1;
+}
+#mySubmit{
+    display: block;
+    margin: 0 auto;
+}
+.myTime:nth-child(2){
+    margin-bottom: 10px;
+}
+.myArea{
+    margin-top: 5px;
+}
+.myHeader{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}

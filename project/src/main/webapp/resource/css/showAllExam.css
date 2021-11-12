@@ -1,0 +1,66 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1.5px solid black;
+    background-color: rgba(255, 255, 255,.8);
+}
+body{
+    background-image: url('https://www.arel.ir/uploads/myimages/1397/3/20%20Uni/Classic%20university%20(3).jpg');
+    width: 100%;
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+th {
+    text-align: start;
+}
+
+th, td {
+    padding-left: 6px;
+    border: 1px solid black;
+}
+
+td {
+    padding: 8px;
+}
+
+#addExam {
+    padding: 10px;
+    background-color: cyan;
+    text-decoration: none;
+    display: block;
+    width: 70px;
+    border-radius: 6px;
+
+    font-size: 17px;
+}
+
+.modify {
+    text-decoration: none;
+    padding: 3px;
+    background-color: coral;
+    border-radius: 5px;
+}
+
+.finished {
+    /*cursor: none;*/
+    cursor: not-allowed;
+    background-color: rgb(245, 167, 139);
+    border-radius: 5px;
+    padding: 3px;
+    text-decoration: none;
+    /*pointer-events: none;*/
+}
+.myWrapper{
+    cursor: none;
+    position: relative;
+}
+
+.not-started {
+    border-radius: 5px;
+    padding: 3px;
+    text-decoration: none;
+    background-color: aqua;
+}
