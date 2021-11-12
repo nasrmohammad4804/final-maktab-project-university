@@ -1,6 +1,8 @@
 package ir.maktab.project.mapper;
 
+import ir.maktab.project.domain.Course;
 import ir.maktab.project.domain.User;
+import ir.maktab.project.domain.dto.CourseDTO;
 import ir.maktab.project.domain.dto.UserOfCourseDTO;
 import ir.maktab.project.domain.dto.UserSearchResponseDTO;
 import org.mapstruct.Mapper;
@@ -14,4 +16,6 @@ public interface UserMapper {
     List<UserOfCourseDTO>  convertEntitiesToUserOfCourseDTO(List<User> users);
 
     UserOfCourseDTO convertEntityTOUserOfCourseDTO(User user);
+
+    List<CourseDTO> convertEntitiesToCourseDTO(List<Course> courses);
 }
