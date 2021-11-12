@@ -54,6 +54,11 @@ public class MasterController {
 
         return "master/showAllExam";
     }
+    @GetMapping(value = "/exam/{id}")
+    public String showExam(@PathVariable("id") Long id,Model model){
+        model.addAttribute("exam",  mapper.convertEntityToExamDTO(examService.findById(id)));
+        return "master/showExam";
+    }
 
     @GetMapping(value = "/create-exam/{id}")
     public String createExam(@ModelAttribute("myError") String error, @PathVariable("id") Long courseId, Model model) {
