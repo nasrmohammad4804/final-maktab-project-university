@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -21,7 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin().defaultSuccessUrl("/login-user").failureUrl("/login?error=true");
         http.authorizeRequests().mvcMatchers("/master/**").hasRole("master");
-
+        http.authorizeRequests().mvcMatchers("/unauthorized").authenticated();
+        http.exceptionHandling().accessDeniedPage("/unauthorized");
         http.cors().and().csrf().disable();
         http.formLogin();
     }
@@ -31,5 +33,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         return new BCryptPasswordEncoder();
     }
-
 }
