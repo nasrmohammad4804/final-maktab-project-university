@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +11,10 @@
 <body>
 
 
-</form>
 
+    <c:if test="${not empty error}">
+        <span style="color: red;font-size: 18px">${error}</span>
+    </c:if>
 <form action="/course/find-master" method="post">
     <div>
         <label for="">courseName:</label>

@@ -42,20 +42,20 @@
             %>
             <td><%=ExamState.NOT_STARTED.name()%></td>
             <td><a href="/master/change-examNotStarted?id=${exam.id}" class="not-started">modify</a></td>
-            <td><a href="">show</a></td>
+            <td><a href="/master/exam/${exam.id}">show</a></td>
             <%
             } else if (currentTime.isAfter(exam.getStartTime()) && currentTime.isBefore(exam.getStartTime().toLocalDate().atTime(exam.getEndTime()))) {
             %>
             <td><%=ExamState.ON_PERFORMING.name()%></td>
             <td><a href="/master/change-examBeingHeld?examId=${exam.id}" class="modify">modify</a></td>
-            <td><a href="">show</a></td>
+            <td><a href="/master/exam/${exam.id}">show</a></td>
             <%
             } else {
             %>
             <td><%=ExamState.FINISHED.name()%></td>
             <span class="myWrapper">
             <td><a href="#" class="finished">modify</a></td> </span>
-            <td><a href="">show</a></td>
+            <td><a href="/master/exam/${exam.id}">show</a></td>
             <%
                 }
             %>

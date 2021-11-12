@@ -15,12 +15,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Controller
 @RequestMapping(value = "/course")
@@ -39,7 +42,7 @@ public class CourseController {
     private StudentService studentService;
 
     @GetMapping(value = "/create")
-    public String createCourse() {
+    public String createCourse(@ModelAttribute("error") String error) {
         return "course/addCourse";
     }
 
@@ -136,7 +139,14 @@ public class CourseController {
     }
     @PostMapping(value = "/find-master")
     @PreAuthorize("hasRole('manager')")
-    public String findAll(@ModelAttribute("course") Course course, HttpServletRequest request, Model model) {
+    public String findAll(@ModelAttribute("course") Course course, HttpServletRequest request, Model model, RedirectAttributes attributes) {
+
+        Predicate<LocalDate> predicate= ( x -> LocalDate.now().isAfter(x)  );
+        Predicate<LocalDate> finalPredicate= predicate.or(x -> course.getCourseFinishedDate().isBefore(x));
+        if(finalPredicate.test(course.getCourseStartedDate())){
+            attributes.addAttribute("error","your time is not valid");
+            return "redirect:/course/create";
+        }
 
         HttpSession session = request.getSession();
         session.setAttribute("course", course);
