@@ -47,7 +47,6 @@ public class CourseController {
 
 
     @GetMapping(value = "/confirm/{id}")
-    @ResponseBody
     public String confirmOfAddCourse(@PathVariable("id") Long id, HttpServletRequest request) {
         Optional<User> user = userService.findById(id);
 
@@ -57,7 +56,7 @@ public class CourseController {
         course.setMaster((Master) user.get());
         courseService.addCourse(course);
 
-        return "<p> course successfully added</p>";
+        return "course/resultOfAddCourse";
     }
 
     @GetMapping(value = "/all")
@@ -123,8 +122,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/confirm-student")
-    @ResponseBody
-    public ResponseEntity<String> confirmOfAddStudentToCourse(@RequestParam("id") Long id, HttpServletRequest request) {
+    public String confirmOfAddStudentToCourse(@RequestParam("id") Long id, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
 
@@ -133,15 +131,13 @@ public class CourseController {
 
         courseService.addStudent(course, studentService.findById(id).get());
 
-        return ResponseEntity.status(HttpStatus.OK).body("<p style=color:green>successfully student added to course</p>");
+        return "course/resultAddStudent";
     }
     @PostMapping(value = "/find-master")
 
     public String findAll(@ModelAttribute("course") Course course, HttpServletRequest request, Model model, RedirectAttributes attributes) {
 
-        Predicate<LocalDate> predicate= ( x -> LocalDate.now().isAfter(x)  );
-        Predicate<LocalDate> finalPredicate= predicate.or(x -> course.getCourseFinishedDate().isBefore(x));
-        if(finalPredicate.test(course.getCourseStartedDate())){
+        if(courseService.checkCreateCourse(course)){
             attributes.addAttribute("error","your time is not valid");
             return "redirect:/course/create";
         }
