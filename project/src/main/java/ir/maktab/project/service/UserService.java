@@ -18,8 +18,6 @@ public interface UserService {
 
     Optional<User> findById(Long id);
 
-    void changeProfile(User user,String newRoleName);
-
     List<User> findAllMaster();
 
 
@@ -29,6 +27,8 @@ public interface UserService {
 
     List<User> searchUser(UserSearchRequestDTO dto);
 
-    List<User> getAll();
+    String register(User user);
+
+    void changeProfile(User user,User updatedUser);
 
 }

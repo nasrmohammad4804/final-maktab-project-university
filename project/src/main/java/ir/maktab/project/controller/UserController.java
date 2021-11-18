@@ -1,23 +1,14 @@
 package ir.maktab.project.controller;
 
-import ir.maktab.project.domain.Master;
-import ir.maktab.project.domain.Student;
 import ir.maktab.project.domain.User;
-import ir.maktab.project.domain.dto.UserModifyingDTO;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
 import ir.maktab.project.domain.dto.UserSearchResponseDTO;
-import ir.maktab.project.domain.enumeration.RegisterState;
-import ir.maktab.project.domain.enumeration.UserType;
 import ir.maktab.project.mapper.UserMapper;
-import ir.maktab.project.service.RoleService;
 import ir.maktab.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -36,12 +27,6 @@ public class UserController {
 
     @Autowired
     private UserMapper mapper;
-
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @PreAuthorize("hasRole('manager')")
     @GetMapping(value = "/change-profile")
@@ -60,39 +45,16 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('manager')")
-    @ResponseBody
+
     @PostMapping(value = "/change-profile")
-    public ResponseEntity<String> changeProfile(@ModelAttribute("user") UserModifyingDTO updatedUser, HttpServletRequest request) {
+    public String changeProfile(@ModelAttribute("user") User updatedUser, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         session.removeAttribute("user");
 
-        if (user.getRole().getName().equals("master")) {
-
-            user.setFirstName(updatedUser.getFirstName());
-            user.setLastName(updatedUser.getLastName());
-
-            if (updatedUser.getUserType().equals(UserType.STUDENT)) {
-
-                user.setRole(roleService.findRoleByName("student"));
-                userService.changeProfile(user, "Student");
-
-            } else userService.save(user);
-
-        } else {
-
-            user.setFirstName(updatedUser.getFirstName());
-            user.setLastName(updatedUser.getLastName());
-
-            if (updatedUser.getUserType().equals(UserType.MASTER)) {
-                user.setRole(roleService.findRoleByName("master"));
-                userService.changeProfile(user, "Master");
-
-            } else userService.save(user);
-
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("this user successfully update>");
+        userService.changeProfile(user,updatedUser);
+        return "user/resultOfEditProfile";
     }
 
     @PreAuthorize("hasRole('manager')")
@@ -127,6 +89,7 @@ public class UserController {
 
         HttpSession session = request.getSession();
         session.setAttribute("myUser", user);
+        session.setMaxInactiveInterval(60*12);
 
         if (user.getRole().getName().equals("manager"))
             return "manager/managerPanel";
@@ -153,25 +116,6 @@ public class UserController {
             return "redirect:/register";
 
         }
-
-        if (user.getUserType().equals(UserType.MASTER)) {
-
-            Master master = Master.builder().firstName(user.getFirstName()).lastName(user.getLastName())
-                    .userName(user.getUserName()).password(passwordEncoder.encode(user.getPassword())).isActive(user.getIsActive())
-                    .registerState(RegisterState.WAITING).build();
-
-            master.setRole(roleService.findRoleByName("master"));
-            userService.save(master);
-
-            return "master/masterPanel";
-        } else {
-            Student student = Student.builder().firstName(user.getFirstName()).lastName(user.getLastName())
-                    .userName(user.getUserName()).password(passwordEncoder.encode(user.getPassword())).isActive(user.getIsActive())
-                    .registerState(RegisterState.WAITING).build();
-            student.setRole(roleService.findRoleByName("student"));
-            userService.save(student);
-
-            return "student/studentPanel";
-        }
+        return userService.register(user);
     }
 }

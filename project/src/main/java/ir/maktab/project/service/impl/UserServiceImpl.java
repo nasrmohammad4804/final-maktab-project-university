@@ -1,12 +1,14 @@
 package ir.maktab.project.service.impl;
 
-import ir.maktab.project.domain.Manager;
-import ir.maktab.project.domain.Role;
-import ir.maktab.project.domain.User;
+import ir.maktab.project.domain.*;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
+import ir.maktab.project.domain.enumeration.RegisterState;
+import ir.maktab.project.domain.enumeration.UserType;
 import ir.maktab.project.repository.UserRepository;
+import ir.maktab.project.service.RoleService;
 import ir.maktab.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository  userRepository;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -56,13 +64,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
-    @Override
+
     @Transactional
-    public void changeProfile(User user,String newRoleName) {
+    protected void changeProfile(User user,String newRoleName) {
 
         save(user);
         updateEntityNameOfTable(newRoleName, user.getId());
-
     }
 
     @Override
@@ -95,8 +102,57 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.findAll();
+    @Transactional
+    public String register(User user) {
+        if (user.getUserType().equals(UserType.MASTER)) {
+
+            Master master = Master.builder().firstName(user.getFirstName()).lastName(user.getLastName())
+                    .userName(user.getUserName()).password(passwordEncoder.encode(user.getPassword())).isActive(user.getIsActive())
+                    .registerState(RegisterState.WAITING).build();
+
+            master.setRole(roleService.findRoleByName("master"));
+            save(master);
+
+            return "master/masterPanel";
+        } else {
+            Student student = Student.builder().firstName(user.getFirstName()).lastName(user.getLastName())
+                    .userName(user.getUserName()).password(passwordEncoder.encode(user.getPassword())).isActive(user.getIsActive())
+                    .registerState(RegisterState.WAITING).build();
+            student.setRole(roleService.findRoleByName("student"));
+            save(student);
+
+            return "student/studentPanel";
+        }
+    }
+
+    @Override
+    @Transactional
+    public void changeProfile(User user, User updatedUser) {
+        if (user.getRole().getName().equals("master")) {
+
+            user.setFirstName(updatedUser.getFirstName());
+            user.setLastName(updatedUser.getLastName());
+
+            if (updatedUser.getUserType().equals(UserType.STUDENT)) {
+
+                user.setRole(roleService.findRoleByName("student"));
+                this.changeProfile(user, "Student");
+
+            } else this.save(user);
+
+        } else {
+
+            user.setFirstName(updatedUser.getFirstName());
+            user.setLastName(updatedUser.getLastName());
+
+            if (updatedUser.getUserType().equals(UserType.MASTER)) {
+                user.setRole(roleService.findRoleByName("master"));
+                this.changeProfile(user, "Master");
+
+            } else save(user);
+
+        }
+
     }
 
     private Predicate getPredicate(UserSearchRequestDTO dto, CriteriaBuilder builder, Root<User> root) {

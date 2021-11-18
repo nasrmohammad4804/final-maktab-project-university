@@ -1,5 +1,6 @@
 package ir.maktab.project.domain;
 
+import ir.maktab.project.base.BaseEntity;
 import ir.maktab.project.domain.enumeration.RegisterState;
 import ir.maktab.project.domain.enumeration.UserType;
 import lombok.AllArgsConstructor;
@@ -16,18 +17,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @DiscriminatorColumn(name = User.ENTITY_NAME)
 @Table(uniqueConstraints = @UniqueConstraint(name = "define_unique",columnNames = {User.USER_NAME}))
-public  class User {
+public  class User extends BaseEntity<Long> {
 
     public static final String ENTITY_NAME = "entity_name";
 
     private static final String FIRST_NAME = "first_name";
     private static final String lAST_NAME = "last_name";
     public static final String USER_NAME = "user_name";
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
-
 
     @Column(name = FIRST_NAME)
     protected String firstName;
@@ -65,7 +61,7 @@ public  class User {
     }
 
     public User(Long id) {
-        this.id = id;
+        super(id);
     }
 
     public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive) {

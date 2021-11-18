@@ -22,13 +22,12 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
 
-                if(response.length===0){
-                    $('table').css('display','none');
-                    $('#not-found-message').css('display','block')
-                }
-                else{
-                    $('table').css('display','table');
-                    $('#not-found-message').css('display','none');
+                if (response.length === 0) {
+                    $('table').css('display', 'none');
+                    $('#not-found-message').css('display', 'block')
+                } else {
+                    $('table').css('display', 'table');
+                    $('#not-found-message').css('display', 'none');
                 }
 
                 $('#my-tbody').html('');
@@ -42,12 +41,12 @@ $(document).ready(function () {
         <td>${response[index].lastName}</td>
         <td>${response[index].userName}</td>
         </tr>`);
-                
-                    if(response[index].registerState==="CONFIRM")
-                    $(`#${index}`).append(`<td> <a href=change-profile?id=${response[index].id} id=green>confirm</a></td>` )
 
-                else
-                    $(`#${index}`).append( `<td> <a href=/confirm-user/${response[index].id} id=orange>waiting</a> </td>`)
+                    if (response[index].registerState === "CONFIRM")
+                        $(`#${index}`).append(`<td> <a href=change-profile?id=${response[index].id} id=green>confirm</a></td>`)
+
+                    else
+                        $(`#${index}`).append(`<td> <a href=/confirm-user/${response[index].id} id=orange>waiting</a> </td>`)
 
                 }
             },

@@ -17,5 +17,6 @@ public interface CourseService {
     List<Course> findByMaster(Master master);
     Optional<Course> findWithId(Long id);
     void addExam(Course course, Exam exam);
+    boolean checkCreateCourse(Course course);
 
 }
