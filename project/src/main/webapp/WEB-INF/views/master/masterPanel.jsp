@@ -12,7 +12,7 @@
 
 
 <div class="header">
-    <span>hello master ${sessionScope.myUser.userName} </span>
+    <span>hello master ${myUser.userName} </span>
 </div>
 
 <table>

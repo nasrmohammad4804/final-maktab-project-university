@@ -1,23 +1,25 @@
-package ir.maktab.project.controller;
+package ir.maktab.project.controller.mastercontroller;
 
 import ir.maktab.project.domain.Course;
 import ir.maktab.project.domain.Exam;
 import ir.maktab.project.domain.Master;
-import ir.maktab.project.exception.ExamNotFoundException;
+import ir.maktab.project.mapper.CourseMapper;
+import ir.maktab.project.mapper.ExamMapper;
 import ir.maktab.project.mapper.UserMapper;
 import ir.maktab.project.service.CourseService;
 import ir.maktab.project.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -25,13 +27,16 @@ import java.util.function.Predicate;
 
 @Controller
 @RequestMapping(value = "/master")
-public class MasterController {
+public class MasterExamController {
 
     @Autowired
     private CourseService courseService;
 
     @Autowired
-    private UserMapper mapper;
+    private CourseMapper courseMapper;
+
+    @Autowired
+    private ExamMapper examMapper;
 
     @Autowired
     private ExamService examService;
@@ -43,7 +48,7 @@ public class MasterController {
         HttpSession session = request.getSession();
         Master user = (Master) session.getAttribute("myUser");
 
-        model.addAttribute("allCourse", mapper.convertEntitiesToCourseDTO(courseService.findByMaster(user)));
+        model.addAttribute("allCourse", this.courseMapper.convertEntitiesToCourseDTO(courseService.findByMaster(user)));
         return "master/masterPanel";
     }
 
@@ -56,7 +61,7 @@ public class MasterController {
     }
     @GetMapping(value = "/exam/{id}")
     public String showExam(@PathVariable("id") Long id,Model model){
-        model.addAttribute("exam",  mapper.convertEntityToExamDTO(examService.findById(id)));
+        model.addAttribute("exam",  examMapper.convertEntityToExamDTO(examService.findById(id)));
         return "master/showExam";
     }
 
@@ -74,7 +79,8 @@ public class MasterController {
 
         Optional<Course> course = courseService.findWithId(courseId);
         if (LocalDateTime.now().isAfter(exam.getStartTime()) || exam.getStartTime().toLocalTime().isAfter(exam.getEndTime())
-                || exam.getStartTime().toLocalDate().isAfter(course.get().getCourseFinishedDate())) {
+                || exam.getStartTime().toLocalDate().isAfter(course.get().getCourseFinishedDate()) ||
+                exam.getStartTime().toLocalDate().isBefore(course.get().getCourseStartedDate())) {
 
             attributes.addAttribute("myError", "start time is not valid");
             return "redirect:/master/create-exam/" + courseId;
@@ -118,21 +124,15 @@ public class MasterController {
     }
 
     @GetMapping(value = "/change-examNotStarted")
-    public String changeExamNotStarted(@RequestParam("id") Long examId, Model model) {
+    public String changeExamNotStarted(@RequestParam("id") Long examId, Model model,HttpServletResponse response) {
+        Cookie cookie=new Cookie("examId",String.valueOf(examId));
+        cookie.setMaxAge(60*60*12);
+        response.addCookie(cookie);
         model.addAttribute("examId", examId);
         return "master/changeExamNotStarted";
     }
 
-    @GetMapping(value = "/check/{id}")
-    @ResponseBody
-    public ResponseEntity<String> checkMasterIdIsValid(@PathVariable("id") Long id) {
-
-       examService.findById(id);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping(value = "/update-examNotStarted/{examId}")
-
     public String changeExamNotStarted(Model model, @PathVariable("examId") Long id, @ModelAttribute("error") String error) {
 
         Exam exam=examService.findById(id);
