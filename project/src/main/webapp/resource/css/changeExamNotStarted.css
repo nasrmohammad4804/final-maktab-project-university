@@ -39,3 +39,26 @@ a:hover{
     padding: 6px 0;
     display: none;
 }
+
+td,
+th {
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+}
+#questionBank {
+    display: none;
+    background-color: rgba(126, 125, 125,.5);
+}
+input[type='submit'],button{
+    padding: 3px;
+    background-color: chocolate;
+    border-radius: 5px;
+}
+#not-found-message{
+    color: red;
+    font-size: 18px;
+    text-align: center;
+    background-color: grey;
+    display: none;
+}

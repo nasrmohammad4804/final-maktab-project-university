@@ -1,0 +1,85 @@
+body{
+    width: 100%;
+    height: 100vh;
+    background-image: url('https://gallerygraph.ir/allthumbs/posts/post_13072/157236061025968428_700_auto.jpg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+*{
+    padding: 0;
+}
+#master{
+    background-color: rgba(145, 135, 135,.9);
+    border-radius: 10px;
+    padding-bottom: 15px;
+    border: 1px solid black;
+    margin-right: 10px;
+
+}
+input[type='text']{
+    width: 350px;
+    border-radius: 4px;
+    padding: 2px 0;
+
+}
+#title{
+    width: 150px;
+}
+
+.parent{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.header-parent{
+    display: flex;
+    margin-bottom: 25px;
+    justify-content: space-around;
+
+
+}
+
+.section{
+    margin: 10px;
+}
+
+.myLink a:hover{
+    background-color:rgb(55, 111, 216) ;
+}
+.myLink{
+    margin-top:12px;
+}
+.myLink a{
+    text-decoration: none;
+    padding: 10px;
+    background-color:cornflowerblue;
+    border-radius: 5px;
+}
+label{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+#myConfirm{
+
+    margin-top: 20px;
+    text-align: center;
+    display: block;
+}
+#myConfirm a{
+
+    display: block;
+    padding: 10px;
+    background-color: rgb(34, 139, 34);
+    width: 375px;
+    text-decoration: none;
+    margin: 0 auto;
+    font-size: 18px;
+    color:white;
+
+}
+#myError{
+    text-align: center;
+    font-size: 18px;
+    margin-top: 5px;
+}

@@ -1,0 +1,47 @@
+body{
+    background-image: url('http://cdn.bartarinha.ir/files/fa/news/1397/7/23/1843102_104.jpg');
+    width: 100%;
+    height:100vh;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+
+}
+.parent{
+    width: 400px;
+    background-color: rgba(126, 125, 125,.8);
+    padding: 5px;
+    border-radius: 5px;
+}
+.section{
+    margin: 5px;
+    width: 50%;
+}
+#question{
+    flex-grow: 1;
+}
+#questionContext{
+    width:83%;
+    height: 100px;
+    resize: none;
+    border-radius: 5px;
+}
+h3{
+    color: rgb(209, 75, 12);
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    padding: 2px;
+    font-size: 25px;
+}
+#cancel{
+    display: inline-block;
+    background-color: whitesmoke ;
+    text-decoration: none;
+    margin-top:2px;
+    padding: 1.1px;
+    padding-right: 5px;
+    text-align: center;
+    color: black;
+}
+label{
+    font-size: 17px;
+}

@@ -1,0 +1,87 @@
+*{
+    margin: 0;
+}
+body{
+    background-image: url('https://safirapply.com/wp-content/uploads/2021/01/slider_1536856930.jpg');
+    width: 100%;
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+td,th{
+    border: 1px solid black;
+    text-align: center;
+    padding: 15px;
+}
+#header{
+    background-color: chocolate;
+}
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+a{
+    text-decoration: none;
+    background-color: greenyellow;
+    border-radius: 4px;
+    padding: 5px;
+    display: inline-block;
+    margin-top: 4px;
+
+}
+td{
+    background-color: rgba(122, 108, 108,.8);
+    font-size: 17px;
+}
+
+input{
+    padding: 2px;
+    border-radius: 5px;
+    font-size: 17px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+}
+input:focus{
+    background-color: rgb(240, 233, 233);
+}
+tfoot{
+    background-color: coral;
+}
+.header-title{
+    background-color: greenyellow;
+    margin-bottom: 5px;
+    text-align: center;
+    padding: 5px;
+}
+#error{
+    display: none;
+    background-color: crimson;
+    padding: 2px;
+    color: white;
+    font-size: 17px;
+    margin-top: 10px;
+}
+#message {
+    display: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 10px;
+    margin: 10px;
+    background-color: darkgoldenrod;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 17px;
+    border-radius: 5px;
+    width: 300px;
+    height: 30px;
+    animation: mymove 5s infinite;
+    animation-delay: 0s;
+    border: 1px solid crimson;
+    color: white;
+}
+@keyframes mymove{
+    from{left: 0;}
+    to{left: 200px;}
+}
