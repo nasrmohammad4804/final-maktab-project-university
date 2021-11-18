@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,6 +18,8 @@ public class ExamServiceImpl implements ExamService {
     @Autowired
     private ExamRepository repository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Exam findById(Long id) {
@@ -33,7 +36,9 @@ public class ExamServiceImpl implements ExamService {
     @Override
     @Transactional
     public void deleteExam(Exam exam) {
-        repository.delete(exam);
+//        exam.getExamQuestionList().forEach(question -> entityManager.remove(question) );
+        entityManager.remove(exam);
+
     }
 
     @Override
@@ -42,5 +47,10 @@ public class ExamServiceImpl implements ExamService {
         exam.setStartTime(updateExam.getStartTime());
         exam.setEndTime(updateExam.getEndTime());
         exam.setDescription(updateExam.getDescription());
+    }
+
+    @Override
+    public Exam findWithId(Long examId) {
+        return repository.findWithId(examId).orElseThrow( () -> new ExamNotFoundException("this exam dont exists") );
     }
 }
