@@ -1,12 +1,14 @@
 package ir.maktab.project.domain;
 
-import ir.maktab.project.domain.enumeration.ExamState;
+import ir.maktab.project.base.BaseEntity;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Setter
@@ -14,14 +16,11 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Exam {
+public class Exam extends BaseEntity<Long> {
 
     private static final String START_TIME="start_time";
     private static final String END_TIME="end_time";
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private static final String EXAM_ID="exam_id";
 
     private String title;
     private String description;
@@ -38,5 +37,9 @@ public class Exam {
     @ManyToOne
     @JoinColumn(name = Course.COURSE_ID)
     private Course course;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = EXAM_ID)
+    private List<ExamQuestion> examQuestionList=new LinkedList<>();
 
 }
