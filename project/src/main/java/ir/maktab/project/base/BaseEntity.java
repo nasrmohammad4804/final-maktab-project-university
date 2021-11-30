@@ -17,10 +17,10 @@ public class BaseEntity<ID extends Serializable> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private ID id;
+    protected ID id;
 
     @Column(columnDefinition = "tinyint(1)")
-    private Boolean isDeleted;
+    protected Boolean isDeleted;
 
     public BaseEntity(ID id) {
         this.id = id;
