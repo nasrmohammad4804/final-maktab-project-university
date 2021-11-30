@@ -95,12 +95,12 @@ public class CourseController {
 
         Course course = courseService.findById(courseId).get();
 
-        Optional<Student> student = studentService.findWithId(studentId);
+        Student student = studentService.findWithId(studentId);
 
-        courseService.deleteUser(course, student.get());
+        courseService.deleteUser(course, student);
 
         return ResponseEntity.status(HttpStatus.OK).body
-                ("you are successfully delete " + student.get().getUserName());
+                ("you are successfully delete " + student.getUserName());
     }
 
     @GetMapping(value = "/select-student")

@@ -18,12 +18,12 @@ import java.util.*;
 @AllArgsConstructor
 public class Course extends BaseEntity<Long> {
 
-    private static final String START_COURSE_DATE ="course_started_date";
+    private static final String START_COURSE_DATE = "course_started_date";
     private static final String FINISHED_COURSE_DATE = "course_finished_date";
-    private static final String TEMP_STUDENT_COURSE="course_student";
-    private static final String COURSE_NUMBER="course_number";
-    private static final String GROUP_NUMBER="group_number";
-    public static final String COURSE_ID="course_id";
+    private static final String TEMP_STUDENT_COURSE = "course_student";
+    private static final String COURSE_NUMBER = "course_number";
+    private static final String GROUP_NUMBER = "group_number";
+    public static final String COURSE_ID = "course_id";
 
 
     private String name;
@@ -44,18 +44,18 @@ public class Course extends BaseEntity<Long> {
     private LocalDate courseFinishedDate;
 
     @ManyToOne
-    @JoinColumn(name =Master.MASTER_ID )
+    @JoinColumn(name = Master.MASTER_ID)
     private Master master;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = TEMP_STUDENT_COURSE)
-    private Set<Student> students=new HashSet<>();
+    private Set<Student> students = new HashSet<>();
 
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "course")
-    private List<Exam> examList=new LinkedList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
+    private List<Exam> examList = new LinkedList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = COURSE_ID)
-    private List<Question> questionBank=new ArrayList<>();
+    private List<Question> questionBank = new ArrayList<>();
 }

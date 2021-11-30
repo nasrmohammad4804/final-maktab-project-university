@@ -1,3 +1,4 @@
+<%@ page import="ir.maktab.project.domain.dto.ExamDTO" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,10 +12,11 @@
 
 <div class="parent">
     <div class="section"><span class="title">id: </span> ${exam.id}</div>
+    <% ExamDTO examDTO= (ExamDTO) request.getAttribute("exam");%>
     <div class="section" ><span class="title">title: </span>${exam.title} </div>
-    <div class="section"><span class="title">description: </span> ${exam.description} </div>
     <div class="section"><span class="title">startTime: </span> ${exam.startTime}</div>
-    <div class="section" ><span class="title">endTime: </span> ${exam.endTime}</div>
+    <div class="section" ><span class="title">endTime: </span>
+        <%=examDTO.getStartTime().toLocalDate().atTime(examDTO.getEndTime())%></div>
 
 </div>
 

@@ -1,6 +1,7 @@
 <%@ page import="ir.maktab.project.domain.Question" %>
 <%@ page import="ir.maktab.project.domain.ExamQuestion" %>
 <%@ page import="ir.maktab.project.domain.TestAnswer" %>
+<%@ page import="ir.maktab.project.domain.Answer" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +38,8 @@
             <td>${question.title}</td>
             <td>${question.questionText}</td>
             <% ExamQuestion examQuestion = (ExamQuestion) pageContext.getAttribute("question");
-                if (examQuestion.getAnswer() instanceof TestAnswer) {
+            Answer answer= examQuestion.getAnswerList().get(0);
+                if (answer instanceof TestAnswer) {
 
             %>
             <td>Test</td>

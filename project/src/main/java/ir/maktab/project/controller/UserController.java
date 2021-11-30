@@ -98,7 +98,7 @@ public class UserController {
             return "forward:/master/panel";
 
         else
-            return "student/studentPanel";
+            return "redirect:/student/panel";
     }
 
     @GetMapping(value = "/register")

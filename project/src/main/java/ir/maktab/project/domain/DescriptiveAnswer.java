@@ -1,8 +1,6 @@
 package ir.maktab.project.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -11,9 +9,9 @@ import javax.persistence.Lob;
 @Setter
 @Getter
 @NoArgsConstructor
-public class DescriptiveAnswer extends Answer{
+@AllArgsConstructor
+public class DescriptiveAnswer extends Answer {
 
     @Lob
     private String answerText;
-
 }

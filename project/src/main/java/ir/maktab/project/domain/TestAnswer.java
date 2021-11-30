@@ -1,14 +1,12 @@
 package ir.maktab.project.domain;
 
 import ir.maktab.project.domain.embeddable.Option;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +24,9 @@ public class TestAnswer extends Answer {
 
     @ElementCollection
     @JoinTable(name = OPTION_TEST_ANSWER)
-    private  List<Option> options = new ArrayList<>();
+    private List<Option> options = new ArrayList<>();
 
-
-
-    public TestAnswer(List<Option> options){
-        this.options=options;
+    public TestAnswer(List<Option> options) {
+        this.options = options;
     }
 }

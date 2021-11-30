@@ -23,7 +23,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public Exam findById(Long id) {
-      return repository.findById(id).orElseThrow(() -> new ExamNotFoundException("this exam dont exists"));
+        return repository.findById(id).orElseThrow(() -> new ExamNotFoundException("this exam dont exists"));
     }
 
     @Override
@@ -36,9 +36,8 @@ public class ExamServiceImpl implements ExamService {
     @Override
     @Transactional
     public void deleteExam(Exam exam) {
-//        exam.getExamQuestionList().forEach(question -> entityManager.remove(question) );
-        entityManager.remove(exam);
 
+        entityManager.remove(exam);
     }
 
     @Override
@@ -51,6 +50,6 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public Exam findWithId(Long examId) {
-        return repository.findWithId(examId).orElseThrow( () -> new ExamNotFoundException("this exam dont exists") );
+        return repository.findWithId(examId).orElseThrow(() -> new ExamNotFoundException("this exam dont exists"));
     }
 }

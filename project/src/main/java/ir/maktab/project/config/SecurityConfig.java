@@ -17,6 +17,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin().defaultSuccessUrl("/login-user").failureUrl("/login?error=true");
         http.authorizeRequests().mvcMatchers("/master/**").hasRole("master")
+                .mvcMatchers("/student/**").hasRole("student")
         .mvcMatchers("/course/**").hasRole("manager");
         http.authorizeRequests().mvcMatchers("/WEB-INF/views/accessDenied.jsp").authenticated();
         http.exceptionHandling().accessDeniedPage("/WEB-INF/views/accessDenied.jsp");

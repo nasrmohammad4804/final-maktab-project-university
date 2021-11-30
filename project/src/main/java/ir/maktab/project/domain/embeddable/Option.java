@@ -1,6 +1,5 @@
 package ir.maktab.project.domain.embeddable;
 
-import ir.maktab.project.base.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,13 +16,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Option implements Serializable {
 
-
     public static final String OPTION = "option";
 
     @Column(columnDefinition = "tinyint(1)")
     private Boolean isAnswered;
 
     private String content;
-
 
 }

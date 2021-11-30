@@ -1,7 +1,11 @@
 package ir.maktab.project.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import ir.maktab.project.base.BaseEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -15,31 +19,45 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Exam extends BaseEntity<Long> {
 
-    private static final String START_TIME="start_time";
-    private static final String END_TIME="end_time";
-    private static final String EXAM_ID="exam_id";
+    private static final String START_TIME = "start_time";
+    private static final String END_TIME = "end_time";
+    public static final String EXAM_ID = "exam_id";
 
-    private String title;
-    private String description;
+    protected String title;
+    protected String description;
 
     @Column(name = START_TIME)
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime startTime;
+    protected LocalDateTime startTime;
 
     @Column(name = END_TIME)
     @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime endTime;
+    protected LocalTime endTime;
 
     @ManyToOne
     @JoinColumn(name = Course.COURSE_ID)
-    private Course course;
+    protected Course course;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = EXAM_ID)
-    private List<ExamQuestion> examQuestionList=new LinkedList<>();
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "exam")
+    @JsonManagedReference
+    protected List<ExamQuestion> examQuestionList = new LinkedList<>();
 
+    @Column(columnDefinition = "tinyint(1)")
+    protected boolean isComplete;
+
+    @Override
+    public String toString() {
+        return "Exam{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", course=" + course +
+                ", examQuestionList=" + examQuestionList +
+                ", isComplete=" + isComplete +
+                '}';
+    }
 }
