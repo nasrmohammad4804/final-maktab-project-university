@@ -1,9 +1,12 @@
 package ir.maktab.project.domain;
 
+import com.fasterxml.jackson.annotation.*;
 import ir.maktab.project.base.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -11,6 +14,7 @@ import javax.persistence.*;
 @Getter
 @Inheritance
 @DiscriminatorColumn(name = Question.QUESTION_TYPE)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Question extends BaseEntity<Long> {
 
     public static final String QUESTION_TYPE = "question_type";
@@ -18,10 +22,10 @@ public class Question extends BaseEntity<Long> {
     private static final String QUESTION_TEXT = "question_text";
 
     @Column(name = QUESTION_TEXT)
-    private String questionText;
+    protected String questionText;
 
     @Column(nullable = false)
-    private String title;
+    protected String title;
 
     @Builder
     public Question(String questionText, String title) {
@@ -29,13 +33,17 @@ public class Question extends BaseEntity<Long> {
         this.title = title;
     }
 
-    @Builder
-    public Question(String questionText, String title, Answer answer) {
-        this.questionText = questionText;
-        this.title = title;
-        this.answer = answer;
+    public Question(Long aLong) {
+        super(aLong);
     }
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "question")
-    private Answer answer;
+    @Builder
+    public Question(String questionText, String title, List<Answer> answerList) {
+        this.questionText = questionText;
+        this.title = title;
+        this.answerList = answerList;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "question")
+    protected List<Answer> answerList=new ArrayList<>();
 }
