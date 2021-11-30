@@ -19,22 +19,26 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ExamQuestionServiceImpl implements ExamQuestionService {
 
+    @Autowired
+    private ExamQuestionRepository examQuestionRepository;
 
     @Override
     @Transactional
     public void addExamQuestionFromQuestionBank(Exam exam, Question question) {
 
         Answer answer;
-        if(question.getAnswer() instanceof TestAnswer){
+        Answer answerBankQuestion = question.getAnswerList().get(0);
+        if (answerBankQuestion instanceof TestAnswer) {
 
-          List<Option> options=  ((TestAnswer) question.getAnswer()).getOptions().stream().map(x -> new Option(x.getIsAnswered(),x.getContent()))
+            List<Option> options = ((TestAnswer) answerBankQuestion).getOptions().stream().map(x -> new Option(x.getIsAnswered(), x.getContent()))
                     .collect(Collectors.toList());
-            answer=new TestAnswer(options);
-        }
-        else answer=new DescriptiveAnswer();
+            answer = new TestAnswer(options);
+        } else answer = new DescriptiveAnswer();
 
-       ExamQuestion examQuestion= new ExamQuestion(question.getQuestionText(), question.getTitle(),answer);
+        ExamQuestion examQuestion = new ExamQuestion(question.getQuestionText(), question.getTitle());
+        examQuestion.getAnswerList().add(answer);
         answer.setQuestion(examQuestion);
+        examQuestion.setExam(exam);
         exam.getExamQuestionList().add(examQuestion);
 
     }
@@ -45,14 +49,19 @@ public class ExamQuestionServiceImpl implements ExamQuestionService {
 
         Answer answer = new DescriptiveAnswer();
         answer.setQuestion(examQuestion);
-        examQuestion.setAnswer(answer);
+
+        examQuestion.getAnswerList().add(answer);
+
+        examQuestion.setExam(exam);
         exam.getExamQuestionList().add(examQuestion);
         Question question = Question.builder().questionText(examQuestion.getQuestionText())
                 .title(examQuestion.getTitle()).build();
 
 
-        Answer answer2=new DescriptiveAnswer();
-        question.setAnswer(answer2);
+        Answer answer2 = new DescriptiveAnswer();
+
+        question.getAnswerList().add(answer2);
+
         answer2.setQuestion(question);
         exam.getCourse().getQuestionBank().add(question);
     }
@@ -85,17 +94,41 @@ public class ExamQuestionServiceImpl implements ExamQuestionService {
             myOption.add(option);
         });
 
-        Answer answer=new TestAnswer(myOption);
-        examQuestion.setAnswer(answer);
+        Answer answer = new TestAnswer(myOption);
+
+        examQuestion.getAnswerList().add(answer);
+
         answer.setQuestion(examQuestion);
+        examQuestion.setExam(exam);
         exam.getExamQuestionList().add(examQuestion);
 
         Question question = Question.builder().questionText(examQuestion.getQuestionText())
                 .title(examQuestion.getTitle()).build();
 
-        Answer answer2=new TestAnswer(myOption);
-        question.setAnswer(answer2);
+        Answer answer2 = new TestAnswer(myOption);
+        question.getAnswerList().add(answer2);
+
         answer2.setQuestion(question);
+
         exam.getCourse().getQuestionBank().add(question);
     }
+
+    @Override
+    public ExamQuestion findById(Long id) {
+        return examQuestionRepository.findById(id).orElseThrow(() -> new RuntimeException("examQuestionNotFound"));
+    }
+
+    @Override
+    public List<ExamQuestion> getAllQuestion(Long examId) {
+        return examQuestionRepository.getAllExamQuestion(examId);
+    }
+
+    @Override
+    public List<ExamQuestion> findAllDescriptiveQuestion(Long examId) {
+
+        //first answer of question always answer of master
+        return getAllQuestion(examId).stream().filter(examQuestion -> examQuestion.getAnswerList().get(0) instanceof DescriptiveAnswer)
+                .collect(Collectors.toList());
+    }
+
 }
