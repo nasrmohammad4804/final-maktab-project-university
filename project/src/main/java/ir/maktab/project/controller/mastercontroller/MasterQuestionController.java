@@ -41,7 +41,6 @@ public class MasterQuestionController {
     @GetMapping(value = "/all-question-bank")
     public ResponseEntity<List<QuestionDTO>> getExam(@RequestParam("title") String title) {
         return ResponseEntity.ok().body(questionMapper.convertEntitiesToQuestionDTO(questionService.findByTitle(title)));
-
     }
 
     @PostMapping(value = "/add-question-bank")
@@ -103,6 +102,9 @@ public class MasterQuestionController {
         return "master/question/showAllQuestionExam";
     }
 
+    /*
+    * this api for master can be set score for designed question in exam
+    * */
     @PutMapping(value = "/change-score")
     public ResponseEntity<String> changeScore(@RequestBody List<Double> scores, @CookieValue("examId") Long examId) {
 
