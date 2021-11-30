@@ -14,5 +14,13 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 
     }
+    @ExceptionHandler(value = NullPointerException.class)
+    public ResponseEntity<String> getNullPointerExceptionError(){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("you must fill data  it is mandatory");
+    }
+    @ExceptionHandler(value = StudentNotFoundException.class)
+    public ResponseEntity<String> getStudentNotFoundError(StudentNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 
 }
