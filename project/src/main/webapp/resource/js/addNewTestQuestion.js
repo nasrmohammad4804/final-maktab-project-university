@@ -122,13 +122,6 @@ $(document).ready(function () {
                 }
             })
         }
-        /*   $('input[name="myOption"]').click(function () {
-    $('input[name="myOption"]').attr('value','false')
 
-    // $('.section').find('input[name="myOption"]').attr('value','false')
-    $(this).attr('value', true);
-
-    isOptionRecognized = true;
-})*/
     })
 })

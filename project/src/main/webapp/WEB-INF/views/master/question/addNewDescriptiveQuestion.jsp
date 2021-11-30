@@ -14,12 +14,12 @@
     <form action="/master/new-descriptive-question" method="post" >
         <div class="section">
             <label for="title">enter title:</label>
-            <input id="title" type = "text" name = "title"  maxlength = "25" />
+            <input id="title" type = "text" name = "title"  maxlength = "25" required />
         </div>
         <div class="section" id="question">
             <label for="questionContext">enter question context: </label>
 
-            <textarea name="questionText" id="questionContext"></textarea>
+            <textarea name="questionText" id="questionContext" required></textarea>
         </div>
         <div class="section">
             <input type="submit" value="confirm" >
