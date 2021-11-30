@@ -7,10 +7,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionDTO {
+public class DescriptiveAnswerDTO {
 
-    private Long id;
-    private String questionText;
-    private String title;
+    private String answerText;
+    private Long questionId;
     private double score;
+
 }

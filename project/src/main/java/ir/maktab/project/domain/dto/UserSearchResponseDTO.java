@@ -1,15 +1,13 @@
 package ir.maktab.project.domain.dto;
 
 import ir.maktab.project.domain.enumeration.RegisterState;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserSearchResponseDTO {
 
     private long id;
