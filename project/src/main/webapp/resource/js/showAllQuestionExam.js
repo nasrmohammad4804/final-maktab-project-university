@@ -30,9 +30,18 @@ $(document).ready(function () {
     $('#scoreConfirm').click(function (e) {
         e.preventDefault();
         let myAllScore = calculateAllScore();
-        console.log(myAllScore)
-        console.log(allPreviousScores)
-        if (myAllScore + "" === allPreviousScores + "") {
+
+
+        let isValidData = true;
+        for (var i in myAllScore) {
+
+            if (isNaN(Number(myAllScore[i]))) {
+                isValidData = false;
+            }
+        }
+        if (!isValidData) {
+            $('#error').html('you are dont valid data for number').css('display', 'block')
+        } else if (myAllScore + "" === allPreviousScores + "") {
 
             $('#error').html('dont change any score of exam').css('display', 'block')
         } else {
@@ -51,6 +60,9 @@ $(document).ready(function () {
                     }, 4500)
 
                 }).catch(error => {
+                if (error.response) {
+                    $('#error').html(error.response.data).css('display', 'block')
+                }
 
             })
 
