@@ -39,7 +39,7 @@ public class DataInitializer {
 
             Role role = roleService.findRoleByName("manager");
 
-            Manager manager = Manager.builder().firstName("mohammad").lastName("nasr").userName("mmn4804")
+            Manager manager = Manager.builder().firstName("mohammad").lastName("nasr").userName("nasrmohammad4804@gmail.com")
                     .password(passwordEncoder.encode("13804804")).isActive(true).role(role).registerState(RegisterState.CONFIRM).build();
 
             managerService.save(manager);
