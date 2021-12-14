@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public interface UserService {
 
-   User save(User user);
+    User save(User user);
 
-   Optional<User> findUserByUserName(String userName);
-
+    Optional<User> findUserByUserName(String userName);
 
     List<User> findAllUserExceptManager();
 
@@ -20,15 +20,22 @@ public interface UserService {
 
     List<User> findAllMaster();
 
-
     void update(User user);
 
-    void updateEntityNameOfTable( String name, Long id);
+    void updateEntityNameOfTable(String name, Long id);
 
     List<User> searchUser(UserSearchRequestDTO dto);
 
     String register(User user);
 
-    void changeProfile(User user,User updatedUser);
+    void changeProfile(User user, User updatedUser);
+
+    Optional<User> getByResetPasswordToken(String token);
+
+    void updateResetPasswordToken(String token, String email);
+
+    void updatePassword(User user, String newPassword);
+
+    boolean isRegisterValid(String userName);
 
 }

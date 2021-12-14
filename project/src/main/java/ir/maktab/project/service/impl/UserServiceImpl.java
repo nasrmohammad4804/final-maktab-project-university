@@ -4,7 +4,9 @@ import ir.maktab.project.domain.*;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
 import ir.maktab.project.domain.enumeration.RegisterState;
 import ir.maktab.project.domain.enumeration.UserType;
+import ir.maktab.project.exception.UserNotFoundException;
 import ir.maktab.project.repository.UserRepository;
+import ir.maktab.project.service.EmailService;
 import ir.maktab.project.service.RoleService;
 import ir.maktab.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository  userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private RoleService roleService;
@@ -39,19 +41,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User save(User user) {
-      return userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public Optional<User> findUserByUserName(String userName) {
         return userRepository.findUserByUserName(userName);
     }
-
-/*    @Override
-    public Page<User> findAll(Optional<Integer> page,Optional<String> sortBy) {
-
-      return  userRepository.findAll(PageRequest.of(page.orElse(0),5,Sort.Direction.ASC,sortBy.orElse("id")));
-    }*/
 
     @Override
     public List<User> findAllUserExceptManager() {
@@ -66,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Transactional
-    protected void changeProfile(User user,String newRoleName) {
+    protected void changeProfile(User user, String newRoleName) {
 
         save(user);
         updateEntityNameOfTable(newRoleName, user.getId());
@@ -87,16 +83,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateEntityNameOfTable(String name, Long id) {
-        userRepository.updateEntityNameOfTable(name,id);
+        userRepository.updateEntityNameOfTable(name, id);
     }
 
     @Override
     public List<User> searchUser(UserSearchRequestDTO dto) {
-        CriteriaBuilder builder=entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery=builder.createQuery(User.class);
-        Root<User> root=criteriaQuery.from(User.class);
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
 
-        criteriaQuery.select(root).where(getPredicate(dto,builder,root));
+        criteriaQuery.select(root).where(getPredicate(dto, builder, root));
         return entityManager.createQuery(criteriaQuery).getResultList().stream().filter(x -> !(x instanceof Manager))
                 .collect(Collectors.toList());
     }
@@ -123,6 +119,12 @@ public class UserServiceImpl implements UserService {
 
             return "student/studentPanel";
         }
+    }
+
+    @Override
+    public boolean isRegisterValid(String userName) {
+
+        return findUserByUserName(userName).isPresent() || userName.equals(EmailService.UNIVERSITY_EMAIL);
     }
 
     @Override
@@ -155,32 +157,56 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private Predicate getPredicate(UserSearchRequestDTO dto, CriteriaBuilder builder, Root<User> root) {
-        List<Predicate> predicates=new ArrayList<>();
+    @Override
+    public Optional<User> getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
 
-        searchingWithFirstName(predicates,builder,root,dto.getFirstName());
-        searchingWithLastName(predicates,builder,root,dto.getLastName());
-        searchingWithRole(predicates,builder,root,dto.getRole());
+    @Override
+    @Transactional
+    public void updateResetPasswordToken(String token, String email) {
+        Optional<User> user = userRepository.findUserByUserName(email);
+        user.ifPresentOrElse(myUser ->
+                myUser.setResetPasswordToken(token), () -> {
+            throw new UserNotFoundException("could not found email with " + email);
+        });
+    }
+
+    @Override
+    @Transactional
+    public void updatePassword(User user, String newPassword) {
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
+    }
+
+    private Predicate getPredicate(UserSearchRequestDTO dto, CriteriaBuilder builder, Root<User> root) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        searchingWithFirstName(predicates, builder, root, dto.getFirstName());
+        searchingWithLastName(predicates, builder, root, dto.getLastName());
+        searchingWithRole(predicates, builder, root, dto.getRole());
         return builder.and(predicates.toArray(new Predicate[0]));
     }
 
     private void searchingWithFirstName(List<Predicate> predicates, CriteriaBuilder builder, Root<User> root, String firstName) {
 
-        if(!firstName.isEmpty()){
-            predicates.add(builder.like(root.get("firstName"),"%"+firstName+"%"));
+        if (!firstName.isEmpty()) {
+            predicates.add(builder.like(root.get("firstName"), "%" + firstName + "%"));
         }
     }
 
     private void searchingWithLastName(List<Predicate> predicates, CriteriaBuilder builder, Root<User> root, String lastName) {
-        if(!lastName.isEmpty()){
-            predicates.add(builder.like(root.get("lastName"),"%"+lastName+"%"));
+        if (!lastName.isEmpty()) {
+            predicates.add(builder.like(root.get("lastName"), "%" + lastName + "%"));
         }
     }
 
     private void searchingWithRole(List<Predicate> predicates, CriteriaBuilder builder, Root<User> root, String role) {
-        if(!role.isEmpty()){
-           Join<User, Role> join=  root.join("role");
-            predicates.add(builder.like(join.get("name"),"%"+role+"%"));
+        if (!role.isEmpty()) {
+            Join<User, Role> join = root.join("role");
+            predicates.add(builder.like(join.get("name"), "%" + role + "%"));
         }
     }
 }

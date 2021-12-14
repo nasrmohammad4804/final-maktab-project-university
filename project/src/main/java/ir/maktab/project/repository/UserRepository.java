@@ -23,4 +23,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "update user as u set u.entity_name=:entityName where u.id=:id", nativeQuery = true)
     void updateEntityNameOfTable(@Param("entityName") String name, @Param("id") Long id);
 
+    Optional<User> findByResetPasswordToken(String token);
 }
