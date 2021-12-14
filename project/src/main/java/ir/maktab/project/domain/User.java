@@ -20,10 +20,11 @@ import javax.persistence.*;
 public  class User extends BaseEntity<Long> {
 
     public static final String ENTITY_NAME = "entity_name";
-
+    public static final String USER_ID="user_id";
     private static final String FIRST_NAME = "first_name";
     private static final String lAST_NAME = "last_name";
     public static final String USER_NAME = "user_name";
+    private static final String RESET_PASSWORD_TOKEN="reset_password_token";
 
     @Column(name = FIRST_NAME)
     protected String firstName;
@@ -42,6 +43,8 @@ public  class User extends BaseEntity<Long> {
     @Column(columnDefinition = "tinyint(1)")
     protected Boolean isActive;
 
+    @Column(name =RESET_PASSWORD_TOKEN )
+    protected String resetPasswordToken;
 
     @ManyToOne
     @JoinColumn(name = Role.ROLE_ID)
