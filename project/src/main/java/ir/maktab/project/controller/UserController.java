@@ -4,7 +4,9 @@ import ir.maktab.project.domain.User;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
 import ir.maktab.project.domain.dto.UserSearchResponseDTO;
 import ir.maktab.project.mapper.UserMapper;
+import ir.maktab.project.service.RecaptchaService;
 import ir.maktab.project.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserMapper mapper;
+
+    @Autowired
+    private RecaptchaService captchaService;
 
     @PreAuthorize("hasRole('manager')")
     @GetMapping(value = "/change-profile")
@@ -81,6 +86,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/login-user")
+    @PreAuthorize("hasAnyRole('master','manager','student')")
     public String findPageForUser(HttpServletRequest request) {
 
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -106,15 +112,28 @@ public class UserController {
         model.addAttribute("error");
         return "user/register";
     }
+    @GetMapping(value ="/login")
+    public String login(){
+        return "user/login";
+    }
 
     @PostMapping(value = "/register")
-    public String register(@ModelAttribute("user") User user, RedirectAttributes attributes) {
+    public String register(@ModelAttribute("user") User user, RedirectAttributes attributes, @RequestParam(name="g-recaptcha-response") String recaptchaResponse,
+                           HttpServletRequest request) {
 
-        if (userService.findUserByUserName(user.getUserName()).isPresent()) {
+        String ip = request.getRemoteAddr();
+        String captchaVerifyMessage =
+                captchaService.verifyRecaptcha(ip, recaptchaResponse);
 
-            attributes.addAttribute("error", "occurred");
+        if ( StringUtils.isNotEmpty(captchaVerifyMessage)) {
+            attributes.addAttribute("error",captchaVerifyMessage);
             return "redirect:/register";
+        }
 
+        if (userService.isRegisterValid(user.getUserName())) {
+
+            attributes.addAttribute("error", "this userName already exists");
+            return "redirect:/register";
         }
         return userService.register(user);
     }
