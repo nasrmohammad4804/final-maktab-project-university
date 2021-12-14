@@ -17,7 +17,7 @@ body{
     width: 90%;
     height: 45px;
     border-radius: 5px;
-    /* margin-bottom:8px ; */
+     margin-bottom:8px ;
     text-align: center;
     background-color: rgba(255, 255, 255, 0.616);
 
@@ -27,7 +27,7 @@ form{
     width: 400px;
     background-color: #c7b4b4;
     display: flex;
-    height: 330px;
+    /*height: 330px;*/
     flex-wrap: wrap;
     justify-content: space-around;
     align-content: space-around;
@@ -54,4 +54,15 @@ input[type='radio']{
 }
 .red{
     color: red;
+}
+input{
+    margin: 10px;
+
+}
+#userNameError{
+    display: none;
+}
+#passwordError{
+    display: none;
+
 }
