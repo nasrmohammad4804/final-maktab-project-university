@@ -22,5 +22,9 @@ public class ExceptionController {
     public ResponseEntity<String> getStudentNotFoundError(StudentNotFoundException e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public ResponseEntity<String > getUserNotFoundException(UserNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 
 }
