@@ -20,6 +20,11 @@
 
 
       }
+      .success-data{
+          background-color: darkgrey !important;
+          padding-top: 5px;
+          padding-bottom: 5px;
+      }
     </style>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
@@ -48,7 +53,10 @@
             </div>
             </c:when>
             <c:when test="${changePasswordMessage!=null}">
-                <div  style="border-radius: 5px;margin: 8px;padding-left: 4px" class="alret alert-success">${changePasswordMessage}</div>
+                <div  style="border-radius: 5px;margin: 8px;padding-left: 4px" class="alret alert-success success-data">${changePasswordMessage}</div>
+            </c:when>
+            <c:when test="${registerSuccess!=null}">
+                <div  style="border-radius: 5px;margin: 8px;padding-left: 4px" class="alret alert-success success-data">${registerSuccess}</div>
             </c:when>
 
         </c:choose>
