@@ -35,7 +35,7 @@ public class LoggingAspect {
             return authentication;
 
         } catch (Exception throwable) {
-            log.error("with username and password dont authenticate");
+            log.warn("with username and password dont authenticate");
             throw throwable;
         }
 
@@ -64,7 +64,7 @@ public class LoggingAspect {
             return result;
 
         } catch (Throwable e) {
-            log.warn("can't send email with token for changing password account to : {}", emailAddress);
+            log.error("can't send email with token for changing password account to : {}", emailAddress);
             throw e;
         }
 
