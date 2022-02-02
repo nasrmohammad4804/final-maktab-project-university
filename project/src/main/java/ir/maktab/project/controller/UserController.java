@@ -3,12 +3,18 @@ package ir.maktab.project.controller;
 import ir.maktab.project.domain.User;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
 import ir.maktab.project.domain.dto.UserSearchResponseDTO;
+import ir.maktab.project.exception.VerificationNotAcceptException;
 import ir.maktab.project.mapper.UserMapper;
 import ir.maktab.project.service.RecaptchaService;
 import ir.maktab.project.service.UserService;
+import ir.maktab.project.smsprovider.SmsRequest;
+import ir.maktab.project.smsprovider.SmsSender;
+import ir.maktab.project.util.Utility;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,10 +38,13 @@ public class UserController {
     @Autowired
     private RecaptchaService captchaService;
 
+    @Autowired
+    private SmsSender smsSender;
+
     @PreAuthorize("hasRole('manager')")
     @GetMapping(value = "/change-profile")
     public String changeProfile(@RequestParam("id") Long id, Model model, HttpServletRequest request) {
-        User user = userService.findById(id).get();
+        User user = userService.findById(id);
 
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
@@ -50,7 +58,6 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('manager')")
-
     @PostMapping(value = "/change-profile")
     public String changeProfile(@ModelAttribute("user") User updatedUser, HttpServletRequest request) {
 
@@ -58,7 +65,7 @@ public class UserController {
         User user = (User) session.getAttribute("user");
         session.removeAttribute("user");
 
-        userService.changeProfile(user,updatedUser);
+        userService.changeProfile(user, updatedUser);
         return "user/resultOfEditProfile";
     }
 
@@ -66,10 +73,10 @@ public class UserController {
     @GetMapping(value = "/confirm-user/{id}")
     public String confirmUser(@PathVariable("id") Long id, Model model) {
 
-        Optional<User> optionalUser = userService.findById(id);
-        model.addAttribute("unapprovedUser", optionalUser.get());
+        User user = userService.findById(id);
+        model.addAttribute("unapprovedUser", user);
 
-        if (optionalUser.get().getRole().getName().equals("master"))
+        if (user.getRole().getName().equals("master"))
             model.addAttribute("userType", "master");
 
         else model.addAttribute("userType", "student");
@@ -78,24 +85,28 @@ public class UserController {
     }
 
     @PostMapping(value = "/search-users", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<UserSearchResponseDTO> searchingUsers(@RequestBody UserSearchRequestDTO dto) {
+    public ResponseEntity<Page<UserSearchResponseDTO>> searchingUsers(@RequestBody UserSearchRequestDTO dto) {
 
-        return mapper.convertEntitiesToDTOList(userService.searchUser(dto));
+        //todo
+
+        /*   return ResponseEntity.ok(
+             userService.searchUser();
+           );*/
+        return null;
+//        return mapper.convertEntitiesToDTOList(userService.searchUser(dto));
 
     }
 
     @GetMapping(value = "/login-user")
     @PreAuthorize("hasAnyRole('master','manager','student')")
     public String findPageForUser(HttpServletRequest request) {
-
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userService.findUserByUserName(userName).get();
 
         HttpSession session = request.getSession();
         session.setAttribute("myUser", user);
-        session.setMaxInactiveInterval(60*12);
+        session.setMaxInactiveInterval(60 * 12);
 
         if (user.getRole().getName().equals("manager"))
             return "manager/managerPanel";
@@ -112,21 +123,25 @@ public class UserController {
         model.addAttribute("error");
         return "user/register";
     }
-    @GetMapping(value ="/login")
-    public String login(){
+
+    @GetMapping(value = "/login")
+    public String login(@RequestParam("success-message") Optional<Boolean> message, Model model) {
+        message.ifPresent(data ->
+                model.addAttribute("registerSuccess", "you have successfully registered")
+        );
         return "user/login";
     }
 
-    @PostMapping(value = "/register")
-    public String register(@ModelAttribute("user") User user, RedirectAttributes attributes, @RequestParam(name="g-recaptcha-response") String recaptchaResponse,
-                           HttpServletRequest request) {
+    @PostMapping(value = "/verification")
+    public String verification(@ModelAttribute("user") User user, RedirectAttributes attributes, @RequestParam(name = "g-recaptcha-response") String recaptchaResponse,
+                               HttpServletRequest request) {
 
         String ip = request.getRemoteAddr();
         String captchaVerifyMessage =
                 captchaService.verifyRecaptcha(ip, recaptchaResponse);
 
-        if ( StringUtils.isNotEmpty(captchaVerifyMessage)) {
-            attributes.addAttribute("error",captchaVerifyMessage);
+        if (StringUtils.isNotEmpty(captchaVerifyMessage)) {
+            attributes.addAttribute("error", captchaVerifyMessage);
             return "redirect:/register";
         }
 
@@ -135,6 +150,31 @@ public class UserController {
             attributes.addAttribute("error", "this userName already exists");
             return "redirect:/register";
         }
-        return userService.register(user);
+        attributes.addFlashAttribute("user", user);
+        return "redirect:/verification-sms";
+
     }
+
+    @GetMapping("/verification-sms")
+    public String registerVerification(@ModelAttribute("user") User user, Model model) throws Exception {
+        String verification = Utility.generateVerification();
+
+        smsSender.send(
+                SmsRequest.builder().isFlash(true).to(user.getPhoneNumber())
+                        .text("hello " + user.getFirstName() + " your verification code is : " + verification)
+                        .build()
+        );
+        model.addAttribute("verificationCode", verification);
+        return "user/getVerificationCode";
+    }
+
+    @PostMapping("/register/{user-code}")
+    public ResponseEntity<String> register(@RequestBody User user, @PathVariable("user-code") String userCode, @RequestParam("verification-code") String verificationCode) {
+        if (!verificationCode.equals(userCode))
+            throw new VerificationNotAcceptException("your verificationCode not valid");
+
+        return ResponseEntity.ok(userService.register(user));
+
+    }
+
 }

@@ -23,7 +23,8 @@ public class Master extends User{
     private final List<Course> courses=new ArrayList<>();
 
     @Builder
-    public Master(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive) {
-        super(firstName, lastName, userName, password, registerState, isActive);
+    public Master(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive,String phoneNumber) {
+        super(firstName, lastName, userName, password, registerState, isActive,phoneNumber);
     }
+
 }

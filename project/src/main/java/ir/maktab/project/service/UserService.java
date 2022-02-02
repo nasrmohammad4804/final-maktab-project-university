@@ -1,30 +1,26 @@
 package ir.maktab.project.service;
 
+import ir.maktab.project.base.service.BaseService;
 import ir.maktab.project.domain.User;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
+import ir.maktab.project.domain.dto.UserSearchResponseDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public interface UserService {
-
-    User save(User user);
+public interface UserService extends BaseService<User,String,Long> {
 
     Optional<User> findUserByUserName(String userName);
 
-    List<User> findAllUserExceptManager();
-
-    Optional<User> findById(Long id);
 
     List<User> findAllMaster();
 
-    void update(User user);
-
     void updateEntityNameOfTable(String name, Long id);
 
-    List<User> searchUser(UserSearchRequestDTO dto);
+    Page<UserSearchResponseDTO> searchUser(int pageNumber,String sortField,String sortDirection, UserSearchRequestDTO dto);
 
     String register(User user);
 
@@ -37,5 +33,7 @@ public interface UserService {
     void updatePassword(User user, String newPassword);
 
     boolean isRegisterValid(String userName);
+
+    Page<User> findPaginated(int pageNumber,int pageSize,String sortField,String sortDirection);
 
 }

@@ -12,7 +12,8 @@ import javax.persistence.Entity;
 public class Manager extends User{
 
     @Builder
-    public Manager(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive, Role role) {
+    public Manager(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive, Role role,String phoneNumber) {
         super(firstName, lastName, userName, password, registerState, isActive, role);
+        this.setPhoneNumber(phoneNumber);
     }
 }

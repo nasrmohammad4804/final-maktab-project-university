@@ -29,8 +29,8 @@ public class Student extends User {
     private String studentCode;
 
     @Builder
-    public Student(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive) {
-        super(firstName, lastName, userName, password, registerState, isActive);
+    public Student(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive, String phoneNumber) {
+        super(firstName, lastName, userName, password, registerState, isActive, phoneNumber);
     }
 
     @ManyToMany(mappedBy = "students")

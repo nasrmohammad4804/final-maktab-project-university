@@ -1,7 +1,10 @@
 package ir.maktab.project.service.impl;
 
+import ir.maktab.project.base.service.impl.BaseServiceImpl;
+import ir.maktab.project.controller.ManagerController;
 import ir.maktab.project.domain.*;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
+import ir.maktab.project.domain.dto.UserSearchResponseDTO;
 import ir.maktab.project.domain.enumeration.RegisterState;
 import ir.maktab.project.domain.enumeration.UserType;
 import ir.maktab.project.exception.UserNotFoundException;
@@ -10,6 +13,9 @@ import ir.maktab.project.service.EmailService;
 import ir.maktab.project.service.RoleService;
 import ir.maktab.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +30,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl implements UserService {
-
-    @Autowired
-    private UserRepository userRepository;
+public class UserServiceImpl extends BaseServiceImpl<User,Long,String,UserRepository> implements UserService {
 
     @Autowired
     private RoleService roleService;
+
+
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -38,63 +43,56 @@ public class UserServiceImpl implements UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Override
-    @Transactional
-    public User save(User user) {
-        return userRepository.save(user);
+    public UserServiceImpl(UserRepository repository) {
+        super(repository);
     }
 
     @Override
     public Optional<User> findUserByUserName(String userName) {
-        return userRepository.findUserByUserName(userName);
+        return repository.findUserByUserName(userName);
     }
-
-    @Override
-    public List<User> findAllUserExceptManager() {
-        return userRepository.findAll().stream().filter(x -> !(x instanceof Manager))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
-
 
     @Transactional
     protected void changeProfile(User user, String newRoleName) {
 
-        save(user);
+        saveOrUpdate(user);
         updateEntityNameOfTable(newRoleName, user.getId());
     }
 
     @Override
     public List<User> findAllMaster() {
-        return userRepository.findAllMaster();
-    }
-
-
-    @Override
-    @Transactional
-    public void update(User user) {
-        save(user);
+        return repository.findAllMaster();
     }
 
     @Override
     @Transactional
     public void updateEntityNameOfTable(String name, Long id) {
-        userRepository.updateEntityNameOfTable(name, id);
+        repository.updateEntityNameOfTable(name, id);
     }
 
     @Override
-    public List<User> searchUser(UserSearchRequestDTO dto) {
+    public Page<UserSearchResponseDTO> searchUser(int pageNumber,String sortField,String sortDirection, UserSearchRequestDTO dto) {
+
+        Pageable pageable= PageRequest.of(pageNumber-1, ManagerController.DEFAULT_PAGE_SIZE,getSort(sortField,sortDirection));
+
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
         Root<User> root = criteriaQuery.from(User.class);
 
         criteriaQuery.select(root).where(getPredicate(dto, builder, root));
-        return entityManager.createQuery(criteriaQuery).getResultList().stream().filter(x -> !(x instanceof Manager))
+        List<User> users= entityManager.createQuery(criteriaQuery).getResultList().stream().filter(x -> !(x instanceof Manager))
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(
+                findUserSearchResponseDtoOfPage(pageNumber,ManagerController.DEFAULT_PAGE_SIZE),pageable,users.size()
+        );
+    }
+
+    private List<UserSearchResponseDTO> findUserSearchResponseDtoOfPage(int pageNumber,int pageSize){
+
+       return entityManager.createQuery( "select new ir.maktab.project.domain.dto.UserSearchResponseDTO(u.id,u.firstName,u.lastName,u.userName,u.registerState) from User as u where u.role.name in('master','student')")
+                .setMaxResults(pageSize).setFirstResult(pageNumber * pageSize)
+                .getResultList();
     }
 
     @Override
@@ -104,18 +102,18 @@ public class UserServiceImpl implements UserService {
 
             Master master = Master.builder().firstName(user.getFirstName()).lastName(user.getLastName())
                     .userName(user.getUserName()).password(passwordEncoder.encode(user.getPassword())).isActive(user.getIsActive())
-                    .registerState(RegisterState.WAITING).build();
+                    .registerState(RegisterState.WAITING).phoneNumber(user.getPhoneNumber()).build();
 
             master.setRole(roleService.findRoleByName("master"));
-            save(master);
+            saveOrUpdate(master);
 
             return "master/masterPanel";
         } else {
             Student student = Student.builder().firstName(user.getFirstName()).lastName(user.getLastName())
                     .userName(user.getUserName()).password(passwordEncoder.encode(user.getPassword())).isActive(user.getIsActive())
-                    .registerState(RegisterState.WAITING).build();
+                    .registerState(RegisterState.WAITING).phoneNumber(user.getPhoneNumber()).build();
             student.setRole(roleService.findRoleByName("student"));
-            save(student);
+            saveOrUpdate(student);
 
             return "student/studentPanel";
         }
@@ -125,6 +123,18 @@ public class UserServiceImpl implements UserService {
     public boolean isRegisterValid(String userName) {
 
         return findUserByUserName(userName).isPresent() || userName.equals(EmailService.UNIVERSITY_EMAIL);
+    }
+
+    @Override
+    public Page<User> findPaginated(int pageNumber, int pageSize, String sortField, String sortDirection) {
+        Pageable pageable= PageRequest.of(pageNumber-1,pageSize,getSort(sortField,sortDirection));
+
+       return repository.findAllByEntityNameContains(new String[] {"Master","Student"},pageable);
+    }
+    private Sort getSort(String sortField,String sortDirection){
+
+       return sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+             Sort.by(sortField).ascending() : Sort.by(sortField).descending();
     }
 
     @Override
@@ -140,7 +150,7 @@ public class UserServiceImpl implements UserService {
                 user.setRole(roleService.findRoleByName("student"));
                 this.changeProfile(user, "Student");
 
-            } else this.save(user);
+            } else this.saveOrUpdate(user);
 
         } else {
 
@@ -151,7 +161,7 @@ public class UserServiceImpl implements UserService {
                 user.setRole(roleService.findRoleByName("master"));
                 this.changeProfile(user, "Master");
 
-            } else save(user);
+            } else saveOrUpdate(user);
 
         }
 
@@ -159,13 +169,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getByResetPasswordToken(String token) {
-        return userRepository.findByResetPasswordToken(token);
+        return repository.findByResetPasswordToken(token);
     }
 
     @Override
     @Transactional
     public void updateResetPasswordToken(String token, String email) {
-        Optional<User> user = userRepository.findUserByUserName(email);
+        Optional<User> user = repository.findUserByUserName(email);
         user.ifPresentOrElse(myUser ->
                 myUser.setResetPasswordToken(token), () -> {
             throw new UserNotFoundException("could not found email with " + email);
@@ -178,7 +188,7 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
         user.setResetPasswordToken(null);
-        userRepository.save(user);
+        repository.save(user);
     }
 
     private Predicate getPredicate(UserSearchRequestDTO dto, CriteriaBuilder builder, Root<User> root) {
@@ -208,5 +218,10 @@ public class UserServiceImpl implements UserService {
             Join<User, Role> join = root.join("role");
             predicates.add(builder.like(join.get("name"), "%" + role + "%"));
         }
+    }
+
+    @Override
+    public Class<User> entityClass() {
+        return User.class;
     }
 }

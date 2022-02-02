@@ -1,6 +1,6 @@
 package ir.maktab.project.domain;
 
-import ir.maktab.project.base.BaseEntity;
+import ir.maktab.project.base.domain.BaseEntity;
 import ir.maktab.project.domain.enumeration.RegisterState;
 import ir.maktab.project.domain.enumeration.UserType;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @DiscriminatorColumn(name = User.ENTITY_NAME)
 @Table(uniqueConstraints = @UniqueConstraint(name = "define_unique",columnNames = {User.USER_NAME}))
-public  class User extends BaseEntity<Long> {
+public  class User extends BaseEntity<String,Long> {
 
     public static final String ENTITY_NAME = "entity_name";
     public static final String USER_ID="user_id";
@@ -36,6 +36,9 @@ public  class User extends BaseEntity<Long> {
     protected String userName;
 
     protected String password;
+
+    @Column(nullable = false)
+    private String phoneNumber;
 
     @Enumerated(value = EnumType.STRING)
     protected RegisterState registerState;
@@ -67,13 +70,14 @@ public  class User extends BaseEntity<Long> {
         super(id);
     }
 
-    public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive) {
+    public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive,String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.password = password;
         this.registerState = registerState;
         this.isActive = isActive;
+        this.phoneNumber=phoneNumber;
     }
 
 

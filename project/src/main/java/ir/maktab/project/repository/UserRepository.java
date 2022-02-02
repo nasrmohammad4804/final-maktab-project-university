@@ -1,6 +1,9 @@
 package ir.maktab.project.repository;
 
 import ir.maktab.project.domain.User;
+import ir.maktab.project.domain.dto.UserSearchResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +27,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void updateEntityNameOfTable(@Param("entityName") String name, @Param("id") Long id);
 
     Optional<User> findByResetPasswordToken(String token);
+
+    @Query(value = "select * from user as u where u.entity_name in :entityName",
+            countQuery = "select count(id) from user as u where u.entity_name in :entityName",nativeQuery = true)
+    Page<User> findAllByEntityNameContains(String[] entityName, Pageable pageable);
 }
