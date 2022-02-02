@@ -1,5 +1,6 @@
 package ir.maktab.project.service.impl;
 
+import ir.maktab.project.base.service.impl.BaseServiceImpl;
 import ir.maktab.project.domain.Exam;
 import ir.maktab.project.domain.ExamQuestion;
 import ir.maktab.project.domain.Question;
@@ -15,19 +16,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Transactional(readOnly = true)
-public class QuestionServiceImpl implements QuestionService {
+public class QuestionServiceImpl extends BaseServiceImpl<Question,Long,String,QuestionRepository> implements QuestionService {
 
-    @Autowired
-    private QuestionRepository questionRepository;
 
-    @Override
-    public List<Question> findByTitle(String title) {
-        return questionRepository.findByTitle(title);
+
+    public QuestionServiceImpl(QuestionRepository repository) {
+        super(repository);
     }
 
     @Override
-    public Optional<Question> findById(Long id) {
-        return questionRepository.findById(id);
+    public List<Question> findByTitle(String title) {
+        return repository.findByTitle(title);
     }
 
     @Override
@@ -51,4 +50,8 @@ public class QuestionServiceImpl implements QuestionService {
         });
     }
 
+    @Override
+    public Class<Question> entityClass() {
+        return Question.class;
+    }
 }

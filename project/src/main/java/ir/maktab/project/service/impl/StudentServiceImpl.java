@@ -1,5 +1,6 @@
 package ir.maktab.project.service.impl;
 
+import ir.maktab.project.base.service.impl.BaseServiceImpl;
 import ir.maktab.project.domain.*;
 import ir.maktab.project.domain.dto.DescriptiveAnswerDTO;
 import ir.maktab.project.domain.dto.TestAnswerDTO;
@@ -21,15 +22,20 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-public class StudentServiceImpl implements StudentService {
+public class StudentServiceImpl extends BaseServiceImpl<Student, Long,String, StudentRepository> implements StudentService {
 
     private final double WRONG_ANSWER_SCORE = 0;
 
     @Autowired
-    private StudentRepository repository;
-
-    @Autowired
     private ExamQuestionService examQuestionService;
+
+    public void setExamQuestionService(ExamQuestionService examQuestionService) {
+        this.examQuestionService = examQuestionService;
+    }
+
+    public StudentServiceImpl(StudentRepository repository) {
+        super(repository);
+    }
 
     @Override
     public List<Student> dontExistOnCourse(Set<Student> users, String checker) {
@@ -39,8 +45,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Optional<Student> findById(Long id) {
-        return repository.findById(id);
+    public Class<Student> entityClass() {
+        return Student.class;
     }
 
     @Override
@@ -106,21 +112,18 @@ public class StudentServiceImpl implements StudentService {
         Optional<Option> myOption = masterAnswer.getOptions().stream().filter(x -> x.getIsAnswered().equals(Boolean.TRUE) && (x.getContent().equals(option.getContent())))
                 .findFirst();
 
-        if (myOption.isPresent())
-            return questionScore;
-
-        return WRONG_ANSWER_SCORE;
+        return myOption.isPresent() ? questionScore : WRONG_ANSWER_SCORE;
 
     }
 
     @Override
     @Transactional
-    public void saveDescriptiveAnswer(Student student, Long examQuestionId, DescriptiveAnswerDTO descriptiveAnswer) {
-        student.getAnswerList().stream().filter(answer -> answer.getQuestion().getId().equals(examQuestionId))
+    public void saveDescriptiveAnswer(Student student, DescriptiveAnswerDTO descriptiveAnswer) {
+        student.getAnswerList().stream().filter(answer -> answer.getQuestion().getId().equals(descriptiveAnswer.getQuestionId()))
                 .findFirst().ifPresentOrElse(answer -> ((DescriptiveAnswer) answer).setAnswerText(descriptiveAnswer.getAnswerText()),
                 () -> {
                     DescriptiveAnswer myDescriptiveAnswer = new DescriptiveAnswer();
-                    myDescriptiveAnswer.setQuestion(new ExamQuestion(examQuestionId));
+                    myDescriptiveAnswer.setQuestion(new ExamQuestion(descriptiveAnswer.getQuestionId()));
                     myDescriptiveAnswer.setAnswerText(descriptiveAnswer.getAnswerText());
                     myDescriptiveAnswer.setStudent(student);
                     student.getAnswerList().add(myDescriptiveAnswer);

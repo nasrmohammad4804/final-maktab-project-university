@@ -1,12 +1,12 @@
 package ir.maktab.project.service.impl;
 
+import ir.maktab.project.base.service.impl.BaseServiceImpl;
 import ir.maktab.project.domain.Course;
 import ir.maktab.project.domain.Exam;
 import ir.maktab.project.domain.Master;
 import ir.maktab.project.domain.Student;
 import ir.maktab.project.repository.CourseRepository;
 import ir.maktab.project.service.CourseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,27 +17,23 @@ import java.util.function.Predicate;
 
 @Service
 @Transactional(readOnly = true)
-public class CourseServiceImpl implements CourseService {
+public class CourseServiceImpl extends BaseServiceImpl<Course,Long,String,CourseRepository> implements CourseService {
 
-    @Autowired
-    private CourseRepository courseRepository;
+    @Override
+    public Class<Course> entityClass() {
+        return Course.class;
+    }
+
+    public CourseServiceImpl(CourseRepository repository) {
+        super(repository);
+    }
 
     @Transactional
     @Override
-    public void addCourse(Course course) {
-        long count = courseRepository.countByName(course.getName());
+    public void saveOrUpdate(Course course) {
+        long count = repository.countByName(course.getName());
         course.setGroupNumber(++count);
-        courseRepository.save(course);
-    }
-
-    @Override
-    public Optional<Course> findById(Long id) {
-        return courseRepository.findById(id);
-    }
-
-    @Override
-    public List<Course> findAll() {
-        return courseRepository.findAll();
+        repository.save(course);
     }
 
     @Override
@@ -55,17 +51,17 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public void addStudent(Course course, Student student) {
         course.getStudents().add(student);
-        courseRepository.save(course);
+        repository.save(course);
     }
 
     @Override
     public List<Course> findByMaster(Master master) {
-        return courseRepository.findByMaster(master);
+        return repository.findByMaster(master);
     }
 
     @Override
     public Optional<Course> findWithId(Long id) {
-        return courseRepository.findWithId(id);
+        return repository.findWithId(id);
     }
 
     @Override

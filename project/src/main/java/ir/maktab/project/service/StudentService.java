@@ -1,5 +1,6 @@
 package ir.maktab.project.service;
 
+import ir.maktab.project.base.service.BaseService;
 import ir.maktab.project.domain.*;
 import ir.maktab.project.domain.dto.DescriptiveAnswerDTO;
 import ir.maktab.project.domain.dto.TestAnswerDTO;
@@ -11,11 +12,9 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public interface StudentService {
+public interface StudentService extends BaseService<Student,String,Long> {
 
     List<Student> dontExistOnCourse(Set<Student> users, String checker);
-
-    Optional<Student> findById(Long id);
 
     Student findWithId(Long id);
 
@@ -27,7 +26,7 @@ public interface StudentService {
 
     void saveTestAnswer(Student student, Long examQuestionId, TestAnswerDTO testAnswerDTO);
 
-    void saveDescriptiveAnswer(Student student, Long examQuestionId, DescriptiveAnswerDTO descriptiveAnswerDTO);
+    void saveDescriptiveAnswer(Student student, DescriptiveAnswerDTO descriptiveAnswerDTO);
 
     List<Answer> findAllAnswerOfStudentExam(Long studentId, Long examId);
 

@@ -5,6 +5,7 @@ import ir.maktab.project.domain.enumeration.RegisterState;
 import ir.maktab.project.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
+@Primary
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserService userService;

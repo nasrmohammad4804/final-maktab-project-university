@@ -1,9 +1,13 @@
 package ir.maktab.project.service.impl;
 
+import ir.maktab.project.base.service.impl.BaseServiceImpl;
 import ir.maktab.project.domain.Role;
+import ir.maktab.project.domain.User;
 import ir.maktab.project.repository.RoleRepository;
 import ir.maktab.project.service.RoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,10 +16,11 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl extends BaseServiceImpl<Role, Long,String, RoleRepository> implements RoleService {
 
-    private final RoleRepository repository;
+    public RoleServiceImpl(RoleRepository repository) {
+        super(repository);
+    }
 
     @Override
     public long count() {
@@ -35,10 +40,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> findAll() {
-        return repository.findAll();
+    public Class<Role> entityClass() {
+        return Role.class;
     }
-
     private void saveAllDefaultRole(List<Role> roles) {
         repository.saveAll(roles);
     }

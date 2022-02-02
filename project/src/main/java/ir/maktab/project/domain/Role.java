@@ -1,12 +1,9 @@
 package ir.maktab.project.domain;
 
-import ir.maktab.project.base.BaseEntity;
+import ir.maktab.project.base.domain.BaseEntity;
 import lombok.*;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
 @NoArgsConstructor
@@ -14,7 +11,7 @@ import javax.persistence.Id;
 @Setter
 @Getter
 @ToString
-public class Role extends BaseEntity<Long> {
+public class Role extends BaseEntity<String,Long> {
 
     public static final String ROLE_ID="role_id";
     private String name;

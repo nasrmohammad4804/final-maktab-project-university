@@ -128,12 +128,12 @@ public class StudentController {
     }
 
     @PostMapping(value = "/add-descriptive-answer")
-    public ResponseEntity<Void> addDescriptiveAnswerOfExamQuestion(@RequestBody DescriptiveAnswerDTO descriptiveAnswerDTO, @RequestParam("questionId") Long questionId, HttpServletRequest request) {
+    public ResponseEntity<Void> addDescriptiveAnswerOfExamQuestion(@RequestBody DescriptiveAnswerDTO descriptiveAnswerDTO, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
         Student student = (Student) session.getAttribute("myUser");
         Optional<Student> optionalStudent = studentService.findWithAllAnswerList(student.getId());
-        studentService.saveDescriptiveAnswer(optionalStudent.get(), questionId, descriptiveAnswerDTO);
+        studentService.saveDescriptiveAnswer(optionalStudent.get(), descriptiveAnswerDTO);
         return ResponseEntity.ok().build();
 
     }

@@ -1,10 +1,7 @@
 package ir.maktab.project.domain;
 
-import ir.maktab.project.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import ir.maktab.project.base.domain.BaseEntity;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -16,7 +13,7 @@ import java.util.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course extends BaseEntity<Long> {
+public class Course extends BaseEntity<String,Long> {
 
     private static final String START_COURSE_DATE = "course_started_date";
     private static final String FINISHED_COURSE_DATE = "course_finished_date";
@@ -58,4 +55,11 @@ public class Course extends BaseEntity<Long> {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = COURSE_ID)
     private List<Question> questionBank = new ArrayList<>();
+
+    @Builder
+    public Course(String name, Long courseNumber, Master master) {
+        this.name = name;
+        this.courseNumber = courseNumber;
+        this.master = master;
+    }
 }

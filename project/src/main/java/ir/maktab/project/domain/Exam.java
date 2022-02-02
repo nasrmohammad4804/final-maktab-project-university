@@ -1,11 +1,8 @@
 package ir.maktab.project.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import ir.maktab.project.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import ir.maktab.project.base.domain.BaseEntity;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -19,7 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Exam extends BaseEntity<Long> {
+public class Exam extends BaseEntity<String,Long> {
 
     private static final String START_TIME = "start_time";
     private static final String END_TIME = "end_time";
@@ -46,6 +43,12 @@ public class Exam extends BaseEntity<Long> {
 
     @Column(columnDefinition = "tinyint(1)")
     protected boolean isComplete;
+
+    @Builder
+    public Exam(String title, String description, LocalDateTime startTime, LocalTime endTime) {
+        this.title = title;
+        this.description = description;
+    }
 
     @Override
     public String toString() {

@@ -1,5 +1,6 @@
 package ir.maktab.project.service.impl;
 
+import ir.maktab.project.base.service.impl.BaseServiceImpl;
 import ir.maktab.project.domain.Manager;
 import ir.maktab.project.repository.ManagerRepository;
 import ir.maktab.project.service.ManagerService;
@@ -8,22 +9,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class ManagerServiceImpl implements ManagerService {
+public class ManagerServiceImpl extends BaseServiceImpl<Manager,Long,String,ManagerRepository> implements ManagerService {
 
-    private final ManagerRepository managerRepository;
 
-    public ManagerServiceImpl(ManagerRepository managerRepository) {
-        this.managerRepository = managerRepository;
+    public ManagerServiceImpl(ManagerRepository repository) {
+        super(repository);
     }
+
+    @Override
+    public Class<Manager> entityClass() {
+        return Manager.class;
+    }
+
 
     @Override
     public long count() {
-        return managerRepository.count();
+        return repository.count();
     }
 
-    @Override
-    @Transactional
-    public void save(Manager manager) {
-        managerRepository.save(manager);
-    }
 }

@@ -1,7 +1,7 @@
 package ir.maktab.project.domain;
 
 import com.fasterxml.jackson.annotation.*;
-import ir.maktab.project.base.BaseEntity;
+import ir.maktab.project.base.domain.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +15,7 @@ import java.util.List;
 @Inheritance
 @DiscriminatorColumn(name = Question.QUESTION_TYPE)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Question extends BaseEntity<Long> {
+public class Question extends BaseEntity<String,Long> {
 
     public static final String QUESTION_TYPE = "question_type";
     public static final String QUESTION_ID = "question_id";

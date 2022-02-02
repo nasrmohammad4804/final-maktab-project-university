@@ -1,26 +1,31 @@
 package ir.maktab.project.service.impl;
 
+import ir.maktab.project.base.service.impl.BaseServiceImpl;
 import ir.maktab.project.domain.*;
 import ir.maktab.project.domain.embeddable.Option;
 import ir.maktab.project.repository.ExamQuestionRepository;
 import ir.maktab.project.service.ExamQuestionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class ExamQuestionServiceImpl implements ExamQuestionService {
+public class ExamQuestionServiceImpl extends BaseServiceImpl<ExamQuestion, Long, String, ExamQuestionRepository> implements ExamQuestionService {
 
-    @Autowired
-    private ExamQuestionRepository examQuestionRepository;
+    @Override
+    public Class<ExamQuestion> entityClass() {
+        return ExamQuestion.class;
+    }
+
+    public ExamQuestionServiceImpl(ExamQuestionRepository repository) {
+        super(repository);
+    }
 
     @Override
     @Transactional
@@ -114,13 +119,8 @@ public class ExamQuestionServiceImpl implements ExamQuestionService {
     }
 
     @Override
-    public ExamQuestion findById(Long id) {
-        return examQuestionRepository.findById(id).orElseThrow(() -> new RuntimeException("examQuestionNotFound"));
-    }
-
-    @Override
     public List<ExamQuestion> getAllQuestion(Long examId) {
-        return examQuestionRepository.getAllExamQuestion(examId);
+        return repository.getAllExamQuestion(examId);
     }
 
     @Override

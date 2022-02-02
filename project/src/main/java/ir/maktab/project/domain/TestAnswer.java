@@ -1,6 +1,7 @@
 package ir.maktab.project.domain;
 
 import ir.maktab.project.domain.embeddable.Option;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,4 +30,11 @@ public class TestAnswer extends Answer {
     public TestAnswer(List<Option> options) {
         this.options = options;
     }
+
+    @Builder
+    public TestAnswer(Question question, List<Option> options) {
+        super(question);
+        this.options = options;
+    }
+
 }

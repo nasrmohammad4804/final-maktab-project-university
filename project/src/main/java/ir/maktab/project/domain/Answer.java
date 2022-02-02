@@ -1,7 +1,7 @@
 package ir.maktab.project.domain;
 
 import com.fasterxml.jackson.annotation.*;
-import ir.maktab.project.base.BaseEntity;
+import ir.maktab.project.base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +17,10 @@ import javax.persistence.*;
 @Inheritance
 @DiscriminatorColumn(name = Answer.ANSWER_TYPE)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Answer extends BaseEntity<Long> {
+public class Answer extends BaseEntity<String,Long> {
 
     public static final String ANSWER_TYPE = "answer_type";
     public static final String ANSWER_ID = "answer_id";
-
     protected double score;
 
     public Answer(Question question) {
@@ -37,6 +36,7 @@ public class Answer extends BaseEntity<Long> {
     @JsonBackReference(value = "student")
     protected Student student;
 
-
-
+    public Answer(Long id) {
+        super(id);
+    }
 }
