@@ -183,6 +183,7 @@ $('#continue').click(function (t) {
             answerText = $('#myAnswerText').val();
             let descriptiveAnswer = question.masterAnswer;
             descriptiveAnswer.answerText = answerText;
+            descriptiveAnswer.questionId=allQuestion[index].id;
             allAnswer[index] = descriptiveAnswer;
 
             if (answerText === "") {
@@ -196,7 +197,7 @@ $('#continue').click(function (t) {
                 }
 
             } else {
-                axios.post('/student/add-descriptive-answer?questionId=' + allQuestion[index].id, descriptiveAnswer)
+                axios.post('/student/add-descriptive-answer', descriptiveAnswer)
                     .then(() => {
                         if (type === 'increase') {
                             index++;
@@ -273,7 +274,8 @@ $('#continue').click(function (t) {
         e.preventDefault();
         saveCurrentPage('decrease');
     })
-    function finishExam(){
+
+    function finishExam() {
         var data = {
             examId: examId,
             examState: 'FINISHED'
@@ -283,6 +285,7 @@ $('#continue').click(function (t) {
                 console.log('ok')
             })
     }
+
     $('#finish').click(function (e) {
         e.preventDefault();
         finishExam();

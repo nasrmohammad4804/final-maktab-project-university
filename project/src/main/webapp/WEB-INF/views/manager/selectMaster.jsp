@@ -7,10 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../../../resource/css/selectMaster.css">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
 </head>
 <body>
-
-    <table>
+<div class="container my-2">
+    <table  border="1px" class="table table-striped table-responsive-md">
         <tr>
             <th>firstName</th>
             <th>lastName</th>
@@ -24,11 +28,11 @@
                 <td>${user.firstName}</td>
                 <td>${user.lastName}</td>
                 <td>${user.userName}</td>
-                <td> <a href="/course/confirm/${user.id}" >choose</a> </td>
+                <td class="select-master"> <a class="btn btn-primary" href="/course/confirm/${user.id}" >choose</a> </td>
             </tr>
         </c:forEach>
 
     </table>
-
+</div>
 </body>
 </html>

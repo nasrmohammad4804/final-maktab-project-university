@@ -18,7 +18,7 @@
 <body>
 
 <div class="parent">
-    <form action="/register" method="post"  id="myForm" >
+    <form action="/verification" method="post"  id="myForm" >
         <input style="margin-top: 5px" class="myInput" type="text" name="firstName" id="myFirstName" placeholder="firstName" required>
 
         <input class="myInput"  type="text" name="lastName" id="myLastName" placeholder="lastName" required>
@@ -26,9 +26,10 @@
         <div id="userNameError"></div>
 
 
-        <input class="myInput" type="text" name="password" id="myPassword" placeholder="password" required>
+        <input class="myInput" type="password" name="password" id="myPassword" placeholder="password" required>
         <div id="passwordError"></div>
-
+        <input class="myInput" placeholder="mobileNumber" name="phoneNumber" type="text" required id="myPhoneNumber">
+        <div id="phoneNumberError"></div>
 
         <div id="userType">
             <label for="master">master</label>
@@ -40,6 +41,7 @@
              data-sitekey="6Lf8y50dAAAAAArhVxDi9OveuI8eRGm6QpbfkIFL">
         </div>
         <input class="myInput" type="submit" value="confirm" id="mySubmit">
+
     </form>
     <c:if test="${error !=null}">
         <div style="color: red;font-size: 18px" >${error}</div>

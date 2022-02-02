@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/master")
@@ -46,12 +45,12 @@ public class MasterQuestionController {
     @PostMapping(value = "/add-question-bank")
     public String addExam(@CookieValue("examId") Long examId, @RequestParam("questionId") Long questionId) {
         Exam exam = examService.findWithId(examId);
-        Optional<Question> question = questionService.findById(questionId);
-        if (questionService.checkExamHasQuestion(exam, question.get())) {
+        Question  question = questionService.findById(questionId);
+        if (questionService.checkExamHasQuestion(exam, question)) {
             return "master/question/QuestionAlreadyExists";
         }
 
-        examQuestionService.addExamQuestionFromQuestionBank(exam, question.get());
+        examQuestionService.addExamQuestionFromQuestionBank(exam, question);
         return "master/question/resultAddQuestionFromQuestionBank";
     }
 

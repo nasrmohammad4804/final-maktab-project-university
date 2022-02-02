@@ -1,11 +1,23 @@
 td,th{
     border: 1px solid black;
     padding: 10px;
+    text-align: center !important;
 }
 a{
-    text-decoration: none;
-    background-color: chartreuse;
+    text-decoration: none !important;
+    background-color: darkorange !important;
+    border-radius: 5px;
 }
 table{
     border-collapse: collapse;
+    margin-top: 40px;
+}
+.select-master{
+    text-align: center !important;
+}
+.select-master a{
+    background-color: cadetblue !important;
+}
+.select-master a:hover{
+    background-color: cornflowerblue !important;
 }

@@ -48,13 +48,13 @@ public class CourseController {
 
     @GetMapping(value = "/confirm/{id}")
     public String confirmOfAddCourse(@PathVariable("id") Long id, HttpServletRequest request) {
-        Optional<User> user = userService.findById(id);
+        User user = userService.findById(id);
 
         HttpSession session = request.getSession();
         Course course = (Course) session.getAttribute("course");
 
-        course.setMaster((Master) user.get());
-        courseService.addCourse(course);
+        course.setMaster((Master) user);
+        courseService.saveOrUpdate(course);
 
         return "course/resultOfAddCourse";
     }
@@ -68,15 +68,15 @@ public class CourseController {
 
     @GetMapping(value = "/show/{id}")
     public String showCourse(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
-        Optional<Course> course = courseService.findById(id);
-        List<User> users = new ArrayList<>(course.get().getStudents());
+        Course course = courseService.findById(id);
+        List<User> users = new ArrayList<>(course.getStudents());
 
 
         HttpSession session = request.getSession();
-        session.setAttribute("courseId", course.get().getId());
+        session.setAttribute("courseId", course.getId());
 
         model.addAttribute("allStudentOfCourse", mapper.convertEntitiesToUserOfCourseDTO(users));
-        model.addAttribute("master", mapper.convertEntityTOUserOfCourseDTO(course.get().getMaster()));
+        model.addAttribute("master", mapper.convertEntityTOUserOfCourseDTO(course.getMaster()));
         return "course/showAllUserOfCourse";
     }
 
@@ -93,7 +93,7 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("<p style=background-color:red>your are dont allow delete student without selecting course</p> ");
 
-        Course course = courseService.findById(courseId).get();
+        Course course = courseService.findById(courseId);
 
         Student student = studentService.findWithId(studentId);
 
@@ -109,7 +109,7 @@ public class CourseController {
         HttpSession session = request.getSession();
         Long courseId = (Long) session.getAttribute("courseId");
 
-        Course course = courseService.findById(courseId).get();
+        Course course = courseService.findById(courseId);
 
         String checker = course.getStudents().isEmpty() ? "" : "data";
 
@@ -127,18 +127,19 @@ public class CourseController {
         HttpSession session = request.getSession();
 
         Long courseId = (Long) session.getAttribute("courseId");
-        Course course = courseService.findById(courseId).get();
+        Course course = courseService.findById(courseId);
 
-        courseService.addStudent(course, studentService.findById(id).get());
+        courseService.addStudent(course, studentService.findById(id));
 
         return "course/resultAddStudent";
     }
+
     @PostMapping(value = "/find-master")
 
     public String findAll(@ModelAttribute("course") Course course, HttpServletRequest request, Model model, RedirectAttributes attributes) {
 
-        if(courseService.checkCreateCourse(course)){
-            attributes.addAttribute("error","your time is not valid");
+        if (courseService.checkCreateCourse(course)) {
+            attributes.addAttribute("error", "your time is not valid");
             return "redirect:/course/create";
         }
 
@@ -150,7 +151,7 @@ public class CourseController {
         if (users.isEmpty())
             return "user/userNotFounding";
 
-        model.addAttribute("users",mapper.convertEntitiesToDTOList(users));
+        model.addAttribute("users", mapper.convertEntitiesToDTOList(users));
 
         return "manager/selectMaster";
     }

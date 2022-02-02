@@ -22,7 +22,7 @@ a{
     color: white;
 }
 #green{
-    background-color: green;
+    background-color: limegreen;
 }
 #orange{
     background-color: orange;
@@ -58,4 +58,27 @@ input[type='submit']{
     text-align: center;
     background-color: grey;
     display: none;
+}
+.my-container{
+    display: flex;
+    width: 300px !important;
+    background-color: sandybrown !important;
+    border-radius: 5px;
+    padding: 10px !important;
+    margin: 5px 0 ;
+    margin-bottom: 20px;
+}
+.sorting{
+    margin: 2px 4px !important;
+}
+#parent-container{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+#number-pagination{
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center;
 }

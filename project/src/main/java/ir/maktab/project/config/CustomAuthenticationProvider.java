@@ -1,10 +1,8 @@
 package ir.maktab.project.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,8 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
@@ -22,10 +18,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    @Qualifier("customUserDetailsService")
     private UserDetailsService userDetailsService;
-
-
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -37,7 +30,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         if (!passwordEncoder.matches(password, userDetails.getPassword()))
             throw new BadCredentialsException("your password is wrong");
-
         return new UsernamePasswordAuthenticationToken(userName, password, userDetails.getAuthorities());
     }
 

@@ -30,7 +30,7 @@ $(document).ready(function () {
                     $('#not-found-message').css('display', 'none');
                 }
 
-                $('#my-tbody').html('');
+            /*    $('#my-tbody').html('');
 
 
                 for (var index = 0; index < response.length; index++) {
@@ -48,7 +48,10 @@ $(document).ready(function () {
                     else
                         $(`#${index}`).append(`<td> <a href=/confirm-user/${response[index].id} id=orange>waiting</a> </td>`)
 
-                }
+                }*/
+
+                //todo new logic for when search then show with pagination
+
             },
             error: function (err) {
                 console.log(err);

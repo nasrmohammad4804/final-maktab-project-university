@@ -33,7 +33,7 @@ form{
     align-content: space-around;
     border-radius: 10px;
 }
-#mySubmit{
+#mySubmit,#sms-submit{
     cursor: pointer;
     background-color: rgb(29, 141, 185);
 }
@@ -65,4 +65,13 @@ input{
 #passwordError{
     display: none;
 
+}
+#sms-panel{
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+#phoneNumberError{
+    display: none;
 }
