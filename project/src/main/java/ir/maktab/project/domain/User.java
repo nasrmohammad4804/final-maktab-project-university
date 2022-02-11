@@ -16,15 +16,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @DiscriminatorColumn(name = User.ENTITY_NAME)
-@Table(uniqueConstraints = @UniqueConstraint(name = "define_unique",columnNames = {User.USER_NAME}))
-public  class User extends BaseEntity<String,Long> {
+@Table(uniqueConstraints = @UniqueConstraint(name = "define_unique", columnNames = {User.USER_NAME}))
+public class User extends BaseEntity<String, Long> {
 
     public static final String ENTITY_NAME = "entity_name";
-    public static final String USER_ID="user_id";
+    public static final String USER_ID = "user_id";
     private static final String FIRST_NAME = "first_name";
     private static final String lAST_NAME = "last_name";
     public static final String USER_NAME = "user_name";
-    private static final String RESET_PASSWORD_TOKEN="reset_password_token";
+    private static final String RESET_PASSWORD_TOKEN = "reset_password_token";
 
     @Column(name = FIRST_NAME)
     protected String firstName;
@@ -46,7 +46,7 @@ public  class User extends BaseEntity<String,Long> {
     @Column(columnDefinition = "tinyint(1)")
     protected Boolean isActive;
 
-    @Column(name =RESET_PASSWORD_TOKEN )
+    @Column(name = RESET_PASSWORD_TOKEN)
     protected String resetPasswordToken;
 
     @ManyToOne
@@ -56,13 +56,17 @@ public  class User extends BaseEntity<String,Long> {
     @Transient
     private UserType userType;
 
-    public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive, Role role) {
+    public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.password = password;
         this.registerState = registerState;
         this.isActive = isActive;
+    }
+
+    public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive, Role role) {
+        this(firstName, lastName, userName, password, registerState, isActive);
         this.role = role;
     }
 
@@ -70,14 +74,9 @@ public  class User extends BaseEntity<String,Long> {
         super(id);
     }
 
-    public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive,String phoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.password = password;
-        this.registerState = registerState;
-        this.isActive = isActive;
-        this.phoneNumber=phoneNumber;
+    public User(String firstName, String lastName, String userName, String password, RegisterState registerState, Boolean isActive, String phoneNumber) {
+        this(firstName, lastName, userName, password, registerState, isActive);
+        this.phoneNumber = phoneNumber;
     }
 
 

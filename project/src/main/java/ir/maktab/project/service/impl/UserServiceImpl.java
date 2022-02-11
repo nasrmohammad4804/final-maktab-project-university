@@ -1,6 +1,7 @@
 package ir.maktab.project.service.impl;
 
 import ir.maktab.project.base.service.impl.BaseServiceImpl;
+import ir.maktab.project.config.oauth.CustomOAuth2User;
 import ir.maktab.project.controller.ManagerController;
 import ir.maktab.project.domain.*;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
@@ -13,9 +14,11 @@ import ir.maktab.project.service.EmailService;
 import ir.maktab.project.service.RoleService;
 import ir.maktab.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,17 +27,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ir.maktab.project.config.SecurityUser.ROLE_PREFIX;
+
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl extends BaseServiceImpl<User,Long,String,UserRepository> implements UserService {
+public class UserServiceImpl extends BaseServiceImpl<User, Long, String, UserRepository> implements UserService {
 
     @Autowired
     private RoleService roleService;
-
 
 
     @Autowired
@@ -71,26 +76,26 @@ public class UserServiceImpl extends BaseServiceImpl<User,Long,String,UserReposi
     }
 
     @Override
-    public Page<UserSearchResponseDTO> searchUser(int pageNumber,String sortField,String sortDirection, UserSearchRequestDTO dto) {
+    public Page<UserSearchResponseDTO> searchUser(int pageNumber, String sortField, String sortDirection, UserSearchRequestDTO dto) {
 
-        Pageable pageable= PageRequest.of(pageNumber-1, ManagerController.DEFAULT_PAGE_SIZE,getSort(sortField,sortDirection));
+        Pageable pageable = PageRequest.of(pageNumber - 1, ManagerController.DEFAULT_PAGE_SIZE, getSort(sortField, sortDirection));
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
         Root<User> root = criteriaQuery.from(User.class);
 
         criteriaQuery.select(root).where(getPredicate(dto, builder, root));
-        List<User> users= entityManager.createQuery(criteriaQuery).getResultList().stream().filter(x -> !(x instanceof Manager))
+        List<User> users = entityManager.createQuery(criteriaQuery).getResultList().stream().filter(x -> !(x instanceof Manager))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(
-                findUserSearchResponseDtoOfPage(pageNumber,ManagerController.DEFAULT_PAGE_SIZE),pageable,users.size()
+                findUserSearchResponseDtoOfPage(pageNumber, ManagerController.DEFAULT_PAGE_SIZE), pageable, users.size()
         );
     }
 
-    private List<UserSearchResponseDTO> findUserSearchResponseDtoOfPage(int pageNumber,int pageSize){
+    private List<UserSearchResponseDTO> findUserSearchResponseDtoOfPage(int pageNumber, int pageSize) {
 
-       return entityManager.createQuery( "select new ir.maktab.project.domain.dto.UserSearchResponseDTO(u.id,u.firstName,u.lastName,u.userName,u.registerState) from User as u where u.role.name in('master','student')")
+        return entityManager.createQuery("select new ir.maktab.project.domain.dto.UserSearchResponseDTO(u.id,u.firstName,u.lastName,u.userName,u.registerState) from User as u where u.role.name in('master','student')")
                 .setMaxResults(pageSize).setFirstResult(pageNumber * pageSize)
                 .getResultList();
     }
@@ -127,14 +132,28 @@ public class UserServiceImpl extends BaseServiceImpl<User,Long,String,UserReposi
 
     @Override
     public Page<User> findPaginated(int pageNumber, int pageSize, String sortField, String sortDirection) {
-        Pageable pageable= PageRequest.of(pageNumber-1,pageSize,getSort(sortField,sortDirection));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, getSort(sortField, sortDirection));
 
-       return repository.findAllByEntityNameContains(new String[] {"Master","Student"},pageable);
+        return repository.findAllByEntityNameContains(new String[]{"Master", "Student"}, pageable);
     }
-    private Sort getSort(String sortField,String sortDirection){
 
-       return sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
-             Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+    @Override
+    public void oauthAuthentication(CustomOAuth2User oAuth2User) {
+
+        Optional<User> optionalUser = findUserByUserName(oAuth2User.getEmail());
+
+        optionalUser.ifPresent(user -> SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(oAuth2User.getEmail(), user.getPassword(),
+                        Collections.singletonList(new SimpleGrantedAuthority(ROLE_PREFIX.concat(user.getRole().getName()))))));
+
+        if (optionalUser.isEmpty())
+            throw new UsernameNotFoundException("this userName not found");
+    }
+
+    private Sort getSort(String sortField, String sortDirection) {
+
+        return sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(sortField).ascending() : Sort.by(sortField).descending();
     }
 
     @Override

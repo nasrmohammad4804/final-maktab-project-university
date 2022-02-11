@@ -98,7 +98,6 @@ public class UserController {
     }
 
     @GetMapping(value = "/login-user")
-    @PreAuthorize("hasAnyRole('master','manager','student')")
     public String findPageForUser(HttpServletRequest request) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 

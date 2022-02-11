@@ -12,7 +12,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityUser implements UserDetails {
 
-    private static final String  ROLE_PREFIX="ROLE_";
+    public static final String  ROLE_PREFIX="ROLE_";
     private final User user;
 
     @Override

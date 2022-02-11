@@ -1,10 +1,12 @@
 package ir.maktab.project.service;
 
 import ir.maktab.project.base.service.BaseService;
+import ir.maktab.project.config.oauth.CustomOAuth2User;
 import ir.maktab.project.domain.User;
 import ir.maktab.project.domain.dto.UserSearchRequestDTO;
 import ir.maktab.project.domain.dto.UserSearchResponseDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,4 +38,5 @@ public interface UserService extends BaseService<User,String,Long> {
 
     Page<User> findPaginated(int pageNumber,int pageSize,String sortField,String sortDirection);
 
+    void oauthAuthentication(CustomOAuth2User oAuth2User);
 }
