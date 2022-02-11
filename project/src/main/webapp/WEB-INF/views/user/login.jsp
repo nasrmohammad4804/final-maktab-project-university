@@ -25,6 +25,9 @@
           padding-top: 5px;
           padding-bottom: 5px;
       }
+        #google-login:hover{
+            background-color: crimson !important;
+        }
     </style>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
@@ -76,8 +79,10 @@
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        <a href="/forgot-password">forgot password?</a>
+        <div style="text-align: center"><a href="/forgot-password">forgot password?</a> </div>
+        <div id="google-login" class="alert-danger" style="text-align: center;margin-top: 20px;opacity: 1;padding: 5px 0"><a style="text-decoration: none;color: black !important;" href="/oauth2/authorization/google">Login with Google</a></div>
     </form>
+
 
 </div>
 
