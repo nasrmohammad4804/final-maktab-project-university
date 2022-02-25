@@ -140,10 +140,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, String, UserRep
     @Override
     public void oauthAuthentication(CustomOAuth2User oAuth2User) {
 
-        Optional<User> optionalUser = findUserByUserName(oAuth2User.getEmail());
+        String email=oAuth2User.getEmail();
+        Optional<User> optionalUser = findUserByUserName(email);
 
         optionalUser.ifPresent(user -> SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(oAuth2User.getEmail(), user.getPassword(),
+                new UsernamePasswordAuthenticationToken(email, user.getPassword(),
                         Collections.singletonList(new SimpleGrantedAuthority(ROLE_PREFIX.concat(user.getRole().getName()))))));
 
         if (optionalUser.isEmpty())

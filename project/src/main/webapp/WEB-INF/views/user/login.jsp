@@ -8,6 +8,10 @@
     <meta name="author" content="">
     <title>Please sign in</title>
     <style>
+        body{
+            background-color: #3e3e3e !important;
+
+        }
         input{
             position: static;
         }
@@ -17,6 +21,7 @@
           border: 1.5px solid black;
           border-radius: 3px;
           background-color: aliceblue;
+          max-width: 350px;
 
 
       }
@@ -26,6 +31,9 @@
           padding-bottom: 5px;
       }
         #google-login:hover{
+            background-color: crimson !important;
+        }
+        #github-login:hover{
             background-color: crimson !important;
         }
     </style>
@@ -77,13 +85,19 @@
              data-sitekey="6Lf8y50dAAAAAArhVxDi9OveuI8eRGm6QpbfkIFL">
         </div>
 
+        <p   style="display: flex;flex-direction: row">
+        <div   style="display: inline">Remember me</div>
+
+        <div  style="display: inline-block;"><input style="width: 16px;height: 14px" type="checkbox" id="remember-me"  name="remember-me" class="form-control" >
+        </div>
+        </p>
+
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <div style="text-align: center"><a href="/forgot-password">forgot password?</a> </div>
         <div id="google-login" class="alert-danger" style="text-align: center;margin-top: 20px;opacity: 1;padding: 5px 0"><a style="text-decoration: none;color: black !important;" href="/oauth2/authorization/google">Login with Google</a></div>
+        <div id="github-login" class="alert-danger" style="text-align: center;margin-top: 20px;opacity: 1;padding: 5px 0"><a style="text-decoration: none;color: black !important;" href="/oauth2/authorization/github">Login with Github</a></div>
     </form>
-
-
 </div>
 
 </body>

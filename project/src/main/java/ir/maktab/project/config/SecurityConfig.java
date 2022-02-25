@@ -32,18 +32,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.addFilterBefore(getUsernamePasswordAuthenticationFilter(), RecaptchaFilter.class).formLogin().loginPage("/login");
-        http.authorizeRequests().mvcMatchers("/", "", "/login", "/resource/**","/oauth2/**").permitAll();
+        http.addFilterBefore(getUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .formLogin().loginPage("/login");
+
+        http.authorizeRequests().mvcMatchers("/", "", "/login", "/resource/**", "/oauth2/**", "/actuator/**").permitAll();
         http.authorizeRequests().mvcMatchers("/master/**").hasRole("master")
                 .mvcMatchers("/student/**").hasRole("student")
                 .mvcMatchers("/course/**").hasRole("manager")
-                .mvcMatchers("/login-user").hasAnyRole("master","student","manager");
+                .mvcMatchers("/login-user").hasAnyRole("master", "student", "manager");
 
         http.authorizeRequests().mvcMatchers("/WEB-INF/views/accessDenied.jsp").authenticated();
         http.exceptionHandling().accessDeniedPage("/WEB-INF/views/accessDenied.jsp");
         http.oauth2Login().loginPage("/login").userInfoEndpoint().userService(oAuth2UserService)
                 .and().successHandler(oAuth2LoginSuccessHandler);
-        http.cors().and().csrf().disable();
+
+        http.csrf().disable();
+        http.cors().disable();
     }
 
     @Bean
@@ -51,7 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         return new BCryptPasswordEncoder();
     }
-
 
     public UsernamePasswordAuthenticationFilter getUsernamePasswordAuthenticationFilter() throws Exception {
 

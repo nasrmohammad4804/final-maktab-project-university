@@ -9,3 +9,9 @@ spring:
             scope:
             - email
             - profile
+          github:
+            client-id: fb545a6af39283f29ef6
+            client-secret: ce380baf56cc76c801f01765f41f8af3dba541cc
+            scope:
+            - user:email
+            - read:user
