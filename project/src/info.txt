@@ -1,0 +1,6 @@
+info.app.name=University Application
+info.app.description=this is an application with 3 role student and master and admin with feature of university
+info.app.version=1.0
+info.app.author=mohammad nasr
+info.app.technologies.backend=springboot-springrest-springmvc-hibernate-mysql-aop-springsecurity-springdatajpa
+info.app.technologies.frontend=html-css-javascript-jquery-ajax-bootstrap
