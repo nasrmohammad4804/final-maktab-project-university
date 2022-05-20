@@ -2,12 +2,14 @@ package ir.maktab.project.controller;
 
 import ir.maktab.project.domain.User;
 import ir.maktab.project.domain.dto.ResetPasswordDTO;
+import ir.maktab.project.event.ForgotPasswordEvent;
 import ir.maktab.project.exception.UserNotFoundException;
 import ir.maktab.project.service.EmailService;
 import ir.maktab.project.service.UserService;
 import ir.maktab.project.util.Utility;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,10 @@ public class ForgotPasswordController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
+
     @GetMapping(value = "/forgot-password")
     public String showForgotPasswordForm() {
 
@@ -38,7 +44,8 @@ public class ForgotPasswordController {
         try {
             userService.updateResetPasswordToken(token, email);
             String resetPasswordLink = Utility.getSiteURL(request) + "/reset-password?token=" + token;
-            emailService.sendEmail(email, resetPasswordLink);
+
+            publisher.publishEvent(new ForgotPasswordEvent(resetPasswordLink,email));
             model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
             return "user/login";
 
