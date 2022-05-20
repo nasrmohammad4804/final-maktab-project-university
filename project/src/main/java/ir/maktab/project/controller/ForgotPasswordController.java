@@ -28,7 +28,6 @@ public class ForgotPasswordController {
     @Autowired
     private ApplicationEventPublisher publisher;
 
-
     @GetMapping(value = "/forgot-password")
     public String showForgotPasswordForm() {
 
